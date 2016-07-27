@@ -1,2 +1,2 @@
 # cl
-Modern C++ command line parsing library
+libcl - Command line parsing library
