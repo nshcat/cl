@@ -39,6 +39,9 @@ file(GLOB SOURCE_FILES src/*.cxx)
 # Define target as static library
 add_library(cl ${SOURCE_FILES})
 
+# Link to libut
+target_link_libraries(cl ${LIBUT_LIBRARIES})
+
 # Require support for at least C++14.
 set_property(TARGET cl PROPERTY CXX_STANDARD 14)
 set_property(TARGET cl PROPERTY CXX_STANDARD_REQUIRED ON)
