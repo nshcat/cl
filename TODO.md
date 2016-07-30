@@ -31,4 +31,12 @@ cl::handler handlr
         cl::id(1)
     }
 };
+
+// Possible options:
+cl::ignore_case
+cl::posix, cl::windows // <- Command line style. Windows needs different grammar.
+cl::universal // <- Maybe. Try posix and then windows.
+
 ```
+
+
