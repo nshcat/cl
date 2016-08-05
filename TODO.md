@@ -16,7 +16,7 @@ void dispatch(reference_t<T>)
 }
 ```
 
-- [ ] Use `ut::string_view` wherever applicable.
+- [ ] Use `ut::string_view` wherever applicable. Maybe `pegtl::input` can be used to create string view. This would replace a lot of unneeded copies since the input is guarantueed to be valid until parsing is done.
 - [ ] Allow user to pass global options along side with argument descriptors. For example:
 ```c++
 cl::handler handlr
