@@ -1,6 +1,7 @@
 # libcl TODO list
 
 ###### Implementation
+- [ ] Provide both getters that return `ut::optional` and those that expect a default value.
 - [ ] Give better error messages when invalid `reference_t<U>` is supplied when `reference_t<T>` is required.
 ```c++
 template< typename U >
