@@ -3,6 +3,8 @@
 ###### General
 - [ ] Check if there is a better way for tags to take strings as parameter. Maybe supply both r-value and l-value overloads.
 - [ ] Rework to use `ut::string_view` where possible. Data referenced by `pegtl::input` is guarantueed to stay valid until end of parsing, so `std::string` only needs to be used where things need to be saved permanently (for example in the argument tree) 
+- [ ] Add interface using `ut::optional`.
+- [ ] Consider adding a get-Interface based on `ut::string_view`.
 
 ###### Implementation
 - [ ] Extend handler constructor so that it can determine the type of an argument (as tag type) and dispatch that
