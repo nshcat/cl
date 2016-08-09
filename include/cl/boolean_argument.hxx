@@ -5,9 +5,10 @@
 #include <string>
 #include <cstdlib>
 #include <algorithm>
+#include <ut/throwf.hxx>
 #include "tags.hxx"
 #include "value_base.hxx"
-#include "utility.hxx"
+
 
 namespace cl
 {
@@ -60,7 +61,7 @@ namespace cl
 						this->m_Value = !m_IsInverse;
 					else if (t_str.compare("false") == 0)
 						this->m_Value = m_IsInverse;
-					else THROW_FMT(std::runtime_error, "Supplied value for \"--%s\" invalid or out of range: \"%s\"", this->m_LongName.c_str(), t_str.c_str());
+					else ut::throwf<std::runtime_error>("Supplied value for \"--%s\" invalid or out of range: \"%s\"", this->m_LongName.c_str(), t_str.c_str());
 				}
 				else /* Used as a flag. Behave like a switch. */
 				{

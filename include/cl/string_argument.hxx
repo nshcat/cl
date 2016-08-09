@@ -1,9 +1,10 @@
 #pragma once
 
 #include <string>
+#include <ut/throwf.hxx>
 
 #include "value_base.hxx"
-#include "utility.hxx"
+
 
 namespace cl
 {
@@ -37,7 +38,7 @@ namespace cl
 				// Check if value list is empty
 				if (p_vals.empty())
 				{
-					THROW_FMT(std::runtime_error, "No value supplied for given argument \"--%s\"!", this->m_LongName.c_str());
+					ut::throwf<std::runtime_error>("No value supplied for given argument \"--%s\"!", this->m_LongName.c_str());
 				}
 				
 				// Set value and consume it from list

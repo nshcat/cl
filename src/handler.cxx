@@ -4,12 +4,13 @@
 #include <iomanip>
 #include <algorithm>
 #include <map>
+#include <ut/throwf.hxx>
 
 #include "handler.hxx"
 #include "grammar.hxx"
 #include "parser_action.hxx"
 #include "parser_state.hxx"
-#include "utility.hxx"
+
 
 
 
@@ -23,7 +24,7 @@ namespace cl
 			auto& ptr = arg.second;
 
 			if (ptr->required() && !ptr->supplied())
-				THROW_FMT(std::runtime_error, "Required argument \"--%s\" was not supplied!", ptr->long_name().c_str());
+				ut::throwf<std::runtime_error>("Required argument \"--%s\" was not supplied!", ptr->long_name().c_str());
 		}
 	}
 
@@ -42,7 +43,7 @@ namespace cl
 
 				if (it == t_map.end())
 					t_map[arg->exclusive_group()] = arg->long_name();
-				else THROW_FMT(std::runtime_error, "\"--%s\": Already supplied argument \"--%s\" for exclusive group \"%s\"!",
+				else ut::throwf<std::runtime_error>("\"--%s\": Already supplied argument \"--%s\" for exclusive group \"%s\"!",
 					arg->long_name().c_str(), it->second.c_str(), it->first.c_str());
 			}
 		}
@@ -79,7 +80,7 @@ namespace cl
 
 		if (it != m_Arguments.end())
 			return it->second.get();
-		else THROW_FMT(std::runtime_error, "Unknown commandline argument: \"--%s\"", p_name.c_str());
+		else ut::throwf<std::runtime_error>("Unknown commandline argument: \"--%s\"", p_name.c_str());
 	}
 
 	auto handler::argument_short(char p_name) const -> internal::argument_base*
@@ -95,7 +96,7 @@ namespace cl
 
 		if(it != m_Arguments.end())
 			return it->second.get();
-		else THROW_FMT(std::runtime_error, "Unknown commandline argument: \"-%c\"", p_name);
+		else ut::throwf<std::runtime_error>("Unknown commandline argument: \"-%c\"", p_name);
 	}
 
 	auto handler::argument_str(const std::string& p_name, bool p_short) const -> internal::argument_base*
@@ -109,7 +110,7 @@ namespace cl
 
 		if (it != m_ArgMap.end())
 			return it->second.get();
-		else THROW_FMT(std::runtime_error, "Unknown commandline argument ID: \"%u\"", p_id);
+		else ut::throwf<std::runtime_error>("Unknown commandline argument ID: \"%u\"", p_id);
 	}
 
 

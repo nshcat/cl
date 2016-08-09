@@ -3,9 +3,10 @@
 #include <vector>
 #include <cinttypes>
 #include <type_traits>
+#include <ut/throwf.hxx>
 
 #include "value_base.hxx"
-#include "utility.hxx"
+
 
 namespace cl
 {
@@ -65,14 +66,14 @@ namespace cl
 				{
 					if (m_Clamp)
 						this->m_Value = m_Min;
-					else THROW_FMT(std::runtime_error, out_of_range_fmt(),
+					else ut::throwf<std::runtime_error>(out_of_range_fmt(),
 						this->m_LongName.c_str(), integer_promote(this->m_Value), "Minimum", integer_promote(m_Min));
 				}
 				else if (m_HasMax && this->m_Value > m_Max)
 				{
 					if (m_Clamp)
 						this->m_Value = m_Max;
-					else THROW_FMT(std::runtime_error, out_of_range_fmt(),
+					else ut::throwf<std::runtime_error>(out_of_range_fmt(),
 						this->m_LongName.c_str(), integer_promote(this->m_Value), "Maximum", integer_promote(m_Max));
 				}
 			}
@@ -83,7 +84,7 @@ namespace cl
 				// Check if value list is empty
 				if (p_vals.empty())
 				{
-					THROW_FMT(std::runtime_error, "No value supplied for given argument \"--%s\"!", this->m_LongName.c_str());
+					ut::throwf<std::runtime_error>("No value supplied for given argument \"--%s\"!", this->m_LongName.c_str());
 				}
 
 				// Try to convert value string to integral value. This will throw if invalid or out of range.
@@ -93,7 +94,7 @@ namespace cl
 				}
 				catch (...)
 				{
-					THROW_FMT(std::runtime_error, "Supplied value for \"--%s\" invalid or out of range: \"%s\"", this->m_LongName.c_str(), p_vals.front().c_str());
+					ut::throwf<std::runtime_error>("Supplied value for \"--%s\" invalid or out of range: \"%s\"", this->m_LongName.c_str(), p_vals.front().c_str());
 				}
 
 				// Consume value from list

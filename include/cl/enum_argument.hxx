@@ -2,9 +2,9 @@
 #include <type_traits>
 #include <algorithm>
 #include <map>
+#include <ut/throwf.hxx>
 
 #include "value_base.hxx"
-#include "utility.hxx"
 
 namespace cl
 {
@@ -53,7 +53,7 @@ namespace cl
 				// Check if value list is empty
 				if (p_vals.empty())
 				{
-					THROW_FMT(std::runtime_error, "No value supplied for given argument \"--%s\"!", this->m_LongName.c_str());
+					ut::throwf<std::runtime_error>("No value supplied for given argument \"--%s\"!", this->m_LongName.c_str());
 				}
 
 				// Check if supplied enumeration value is known.
@@ -79,7 +79,7 @@ namespace cl
 					p_vals.pop_front();
 					this->m_Supplied = true;
 				}
-				else THROW_FMT(std::runtime_error, "Invalid enumeration value for argument \"--%s\": \"%s\"",
+				else ut::throwf<std::runtime_error>("Invalid enumeration value for argument \"--%s\": \"%s\"",
 					this->m_LongName.c_str(), p_vals.front().c_str());
 			}
 
