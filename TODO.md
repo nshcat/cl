@@ -23,7 +23,8 @@ void dispatch(reference_t<T>)
     // Use normally...
 }
 ```
-
+- [ ] Add a way to set a boolean value if the argument was supplied at least once. Naming candidates are `cl::supplied` and `cl::reference<bool>`. This would not clash with `cl::flag_argument` since it simply overrides the `dispatch` member function.
+- [ ] Add `cl::switch` (or other name: `cl::mode`), an argument that does not accept a value and simply sets the reference to a constant enum value.
 - [ ] Use `ut::string_view` wherever applicable. Maybe `pegtl::input` can be used to create string view. This would replace a lot of unneeded copies since the input is guarantueed to be valid until parsing is done.
 - [ ] Allow user to pass global options along side with argument descriptors. For example:
 ```c++
