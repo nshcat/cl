@@ -1,6 +1,7 @@
 # libcl TODO list
 
 ###### General
+- [ ] Use static analyzer (cppcheck f.e.) to test the code
 - [ ] Check if there is a better way for tags to take strings as parameter. Maybe supply both r-value and l-value overloads.
 - [ ] Rework to use `ut::string_view` where possible. Data referenced by `pegtl::input` is guarantueed to stay valid until end of parsing, so `std::string` only needs to be used where things need to be saved permanently (for example in the argument tree) 
 - [ ] Add interface using `ut::optional`.
@@ -42,6 +43,10 @@ cl::handler handlr
 };
 
 // Possible options:
+cl::title() // or application_name
+cl::version // or application_version  // maybe provide alias
+cl::terminate // terminate on failure
+cl::print_help // print help on failure
 cl::ignore_case
 cl::posix, cl::windows // <- Command line style. Windows needs different grammar.
 cl::universal // <- Maybe. Try posix and then windows.
