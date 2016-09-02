@@ -22,18 +22,10 @@ namespace cl
 			enum_argument(const Ttags&... p_tags)
 				: Tbase{}, m_IgnoreCase{ false }
 			{
-				// Dispatch all tags
-				std::initializer_list<int> tmp = { (dispatch(p_tags), 0)... };
-
-				// Silence "not used" warning
-				(void)tmp;
-
-				// Check if long name was set.
-				if (this->long_name().empty())
-					throw std::runtime_error("Long name was not set!");
+				this->template dispatch_all<enum_argument>(p_tags...);
 			}
 
-		protected:
+		public:
 			using Tbase::dispatch;
 
 			void dispatch(const internal::enum_value_t<E>& p_tag)

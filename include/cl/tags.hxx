@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <stdexcept>
 #include <cctype>
 #include <ut/type_traits.hxx>
 
@@ -93,7 +94,9 @@ namespace cl
 				long_name_t(const std::string& p_str)
 					: m_Value(std::move(p_str))
 				{
-
+					// Make sure that long names are always non-empty
+					if(m_Value.empty())
+						throw std::runtime_error("Long names cannot be empty!");
 				}
 
 			public:
@@ -208,6 +211,32 @@ namespace cl
 			private:
 				T	m_Value;
 		};
+		
+		template< typename T >
+		class range_t
+		{
+			public:
+				range_t(T p_min, T p_max)
+					: m_Min(p_min), m_Max(p_max)
+				{
+					
+				}
+				
+			public:
+				const T& min() const
+				{
+					return m_Min;
+				}
+				
+				const T& max() const
+				{
+					return m_Max;
+				}
+				
+			private:
+				T m_Min;
+				T m_Max;
+		};
 
 		template< typename E >
 		class enum_value_t
@@ -247,6 +276,12 @@ namespace cl
 	static internal::max_t<T> max(T p_val)
 	{
 		return internal::max_t<T>(p_val);
+	}
+	
+	template< typename T >
+	static internal::range_t<T> range(T p_min, T p_max)
+	{
+		return internal::range_t<T>(p_min, p_max);
 	}
 
 	template< typename T >

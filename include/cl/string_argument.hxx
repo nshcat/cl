@@ -18,18 +18,10 @@ namespace cl
 			string_argument(const Ttags&... p_tags)
 				: Tbase{}
 			{
-				// Dispatch all tags
-				std::initializer_list<int> tmp = { (dispatch(p_tags), 0)... };
-
-				// Silence "not used" warning
-				(void)tmp;
-
-				// Check if long name was set.
-				if (this->long_name().empty())
-					throw std::runtime_error("Long name was not set!");
+				this->dispatch_all<string_argument>(p_tags...);
 			}
 
-		protected:
+		public:
 			using Tbase::dispatch;
 
 		public:

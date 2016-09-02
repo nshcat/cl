@@ -22,19 +22,7 @@ namespace cl
 			boolean_argument(const Ttags&... p_tags)
 				: Tbase{}, m_IsInverse(false)
 			{
-				// Check for at least one long_name_t
-				static_assert(ut::contains<internal::long_name_t, std::decay_t<Ttags>...>::value,
-					"Long name tag is required for all argument types");
-
-				// Dispatch all tags
-				std::initializer_list<int> tmp = { (dispatch(p_tags), 0)... };
-
-				// Silence "not used" warning
-				(void)tmp;
-
-				// Check if long name was set.
-				if (this->long_name().empty())
-					throw std::runtime_error("Long name was not set!");
+				this->dispatch_all<boolean_argument>(p_tags...);
 			}
 
 		public:
@@ -49,7 +37,6 @@ namespace cl
 					p_val.pop_front();
 
 					// Try to parse as boolalpha.
-					// std::for_each(t_str.begin(), t_str.end(), [](char& c) { c = tolower(c); });
 					std::transform(t_str.begin(), t_str.end(), t_str.begin(),
 						[](char c) -> char
 						{
@@ -76,7 +63,7 @@ namespace cl
 				return true;
 			}
 
-		protected:
+		public:
 			using Tbase::dispatch;
 
 			// Inverse

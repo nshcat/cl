@@ -21,19 +21,7 @@ namespace cl
 			positional_argument(const Ttags&... p_tags)
 				: Tbase{}
 			{
-				// Check for at least one long_name_t
-				static_assert(ut::contains<internal::long_name_t, std::decay_t<Ttags>...>::value,
-					"Long name tag is required for all argument types");
-
-				// Dispatch all tags
-				std::initializer_list<int> tmp = { (dispatch(p_tags), 0)... };
-
-				// Silence "not used" warning
-				(void)tmp;
-
-				// Check if long name was set.
-				if (this->long_name().empty())
-					throw std::runtime_error("Long name was not set!");
+				this->dispatch_all<positional_argument>(p_tags...);
 			}
 
 		public:
@@ -49,8 +37,7 @@ namespace cl
 				this->m_Supplied = true;
 			}
 
-
-		protected:
+		public:
 			using Tbase::dispatch;
 	};
 }

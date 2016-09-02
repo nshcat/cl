@@ -28,6 +28,29 @@ namespace cl
 				{
 
 				}
+			public:
+				// Dispatch all given tags.
+				template< typename T, typename... Ttags >
+				void dispatch_all(const Ttags&... p_tags)
+				{
+					// Check for at least one long_name_t
+					static_assert(ut::contains<internal::long_name_t, std::decay_t<Ttags>...>::value,
+						"Long name tag is required for all argument types");
+					
+					// We know that this ptr is a ptr to T*
+					auto t_ptr = static_cast<T*>(this);
+					
+					// Dispatch all tags
+					std::initializer_list<int> tmp = { (t_ptr->dispatch(p_tags), 0)... };
+
+					// Silence "not used" warning
+					(void)tmp;
+
+					// Check if long name was set.
+					if (this->long_name().empty())
+						throw std::runtime_error("Long name was not set!");
+					
+				}
 
 			public:
 				virtual void read(std::list<std::string>&, bool) = 0;
@@ -98,7 +121,10 @@ namespace cl
 					else return t_arg;
 				}
 
-			protected:
+				// All dispatch overloads in this and all derived argument classes need to
+				// be public since they need to be accessible within
+				// argument_base::dispatch_all.
+			public:
 				// Sink for all unimplemented tags
 				template< typename T >
 				void dispatch(T)

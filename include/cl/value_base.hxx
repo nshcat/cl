@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <limits>
 #include "tags.hxx"
+#include "ut/always_false.hxx"
 #include "argument_base.hxx"
 
 namespace cl
@@ -34,7 +35,7 @@ namespace cl
 					refresh_references();
 				}
 
-			protected:
+			public:
 				using argument_base::dispatch;
 
 				// Set default value
@@ -48,6 +49,14 @@ namespace cl
 				{
 					m_HasReference = true;
 					m_References.push_back(p_tag.ptr());
+				}
+				
+				// Provide better error message if reference is mismatching
+				template< typename U >
+				void dispatch(reference_t<U>)
+				{
+					static_assert( ut::always_false<U>::value,
+						"Reference tag with mismatching type supplied!" );
 				}
 
 			protected:

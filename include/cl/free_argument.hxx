@@ -20,6 +20,10 @@ namespace cl
 			free_argument(const Ttags&... p_tags)
 				: Tbase{}
 			{
+				// We will dispatch the tags without using argument_base::dispatch_all here
+				// since we do not want to check for long_name.
+				// TODO: maybe give dispatch_all a flag to indicate this to avoid duplication.
+				
 				// Dispatch all tags
 				std::initializer_list<int> tmp = { (dispatch(p_tags), 0)... };
 
@@ -27,7 +31,7 @@ namespace cl
 				(void)tmp;
 			}
 
-		protected:
+		public:
 			using Tbase::dispatch;
 
 			// Block long_name from being set // TODO better error message
