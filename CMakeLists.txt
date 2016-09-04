@@ -3,8 +3,7 @@
 ##
 ## This simple project file makes it easy and clean to include libcl in CMake projects
 ## by either including the repo as git submodule or cloning it into the project tree.
-## The resulting folder can be directly used as subproject and defines variables that
-## define both include directories and libraries to link to.
+## The resulting folder can be directly used as subproject.
 ##
 ## Usage:
 ## -------
@@ -13,7 +12,6 @@
 ##    add_subdirectory(cl)
 ##
 ## In each subproject that uses libcl:
-##    include_directories(${LIBCL_INCLUDE_DIRS})
 ##    target_link_libraries(target_name ${LIBCL_LIBRARIES})
 ##
 ##
