@@ -31,7 +31,6 @@ include_directories(${PEGTL_INCLUDE_DIRS})
 
 # Include ut library
 add_subdirectory(ut)
-include_directories(${LIBUT_INCLUDE_DIRS})
 
 # Source files
 file(GLOB SOURCE_FILES src/*.cxx)
@@ -42,18 +41,17 @@ add_library(cl ${SOURCE_FILES})
 # Link to libut
 target_link_libraries(cl ${LIBUT_LIBRARIES})
 
-# Make sure that parent projects do not have to include libut include dirs
-target_include_directories(cl PUBLIC ${LIBUT_INCLUDE_DIRS})
-
+# Add top include directory as public dependency.
+# This automatically adds them to parent projects when linking to libcl.
+target_include_directories(cl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+	
+# Add cl subfolder as private dependency.
+# It will thus not be available to parent projects.
+target_include_directories(cl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/cl)
 
 # Require support for at least C++14.
 set_property(TARGET cl PROPERTY CXX_STANDARD 14)
 set_property(TARGET cl PROPERTY CXX_STANDARD_REQUIRED ON)
 
 # Set user variables
-set(LIBCL_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE INTERNAL "")
 set(LIBCL_LIBRARIES cl CACHE INTERNAL "")
-
-
-# Include own headers to allow own source files to easily include header files
-include_directories(${LIBCL_INCLUDE_DIRS}/cl)
