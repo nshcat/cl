@@ -11,20 +11,20 @@
 namespace cl
 {
 	template< typename T >
-	class integer_argument /* integral value argument */
+	class floating_argument /* integral value argument */
 		: public internal::arithmetic_base<T>
 	{
-		static_assert(::std::is_integral<T>::value,
-			"Type T is not an integral value type!");
+		static_assert(::std::is_floating_point<T>::value,
+			"Type T is not an floating point value type!");
 
 		using Tbase = internal::arithmetic_base<T>;
 
 		public:
 			template< typename... Ttags >
-			integer_argument(const Ttags&... p_tags)
+			floating_argument(const Ttags&... p_tags)
 				: Tbase{}
 			{
-				this->template dispatch_all<integer_argument<T>>(p_tags...);	
+				this->template dispatch_all<floating_argument<T>>(p_tags...);	
 			}
 
 		public:

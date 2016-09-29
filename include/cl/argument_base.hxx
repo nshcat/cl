@@ -183,6 +183,8 @@ namespace cl
 
 				std::string		m_LongName;
 				char			m_ShortName;
+				
+				std::string		m_Description;
 
 				bool			m_HasId;
 				std::size_t		m_Id;

@@ -10,259 +10,115 @@ namespace cl
 {
 	namespace internal
 	{
-		// Ignore case. Used by enum_argument<E>.
-		struct ignore_case_t
+		template< typename >
+		struct nullary_tag_t
 		{
+			
 		};
+		
+		template< typename T, typename >
+		class unary_tag_t
+		{
+			public:
+				unary_tag_t(const T& p_val)
+					: m_Value(p_val)
+				{
+
+				}
+
+			public:
+				const T& value() const
+				{
+					return m_Value;
+				}
+
+			private:
+				T m_Value;
+		};
+		
+		template< typename T, typename U, typename >
+		class binary_tag_t
+		{
+			public:
+				binary_tag_t(const T& p_first, const U& p_second)
+					: m_First(p_first), m_Second(p_second)
+				{
+
+				}
+
+			public:
+				const T& first() const
+				{
+					return m_First;
+				}
+				
+				const U& second() const
+				{
+					return m_Second;
+				}
+
+			private:
+				T m_First;
+				U m_Second;
+		};
+	}
+	
+	
+	namespace internal
+	{
+		// Ignore case. Used by enum_argument<E>.
+		using ignore_case_t = nullary_tag_t<struct _ignore_case>;
 
 		// Flags argument as "required". If it is not supplied, an exception is thrown.
-		struct required_t
-		{
-		};
+		using required_t = nullary_tag_t<struct _required>;
 
 		// Flags argument as "optional". This has no effect since all arguments are optional
 		// by default. This is used to make intented meaning clear.
-		struct optional_t
-		{
-		};
+		using optional_t = nullary_tag_t<struct _optional>;
 
 		// Flags argument as "inverse". This is used in flags that are "false" when they are present,
 		// for example --NoCopy and --Copy sharing a reference.
-		struct inverse_t
-		{
-
-		};
+		using inverse_t = nullary_tag_t<struct _inverse>;
 
 		// Instructs the argument to clamp to range instead of throwing an exception.
 		// This is intended to work with min<T>/max<T>.
-		struct clamp_t // TODO put these in to NS internal
-		{
+		using clamp_t  = nullary_tag_t<struct _clamp>;
 
-		};
+		// Sets the id of an argument. The id is used to access the stored value later on.
+		using id_t = unary_tag_t<::std::size_t, struct _id>;
 
-
-		// Add description to argument
-		class description_t; // TODO
-		class category_t; // TODO
-
-
-		class id_t
-		{
-			public:
-				id_t(std::size_t p_val)
-					: m_Value(p_val)
-				{
-
-				}
-
-			public:
-				std::size_t value() const
-				{
-					return m_Value;
-				}
-
-			private:
-				std::size_t		m_Value;
-		};
-
-
-		// Add reference to argument that is automatically filled with read value
-		template< typename T >
-		class reference_t
-		{
-			public:
-				reference_t(T& p_ref) // IN/OUT 
-					: m_Ptr(std::addressof(p_ref))
-				{
-				}
-
-			public:
-				T* ptr() const
-				{
-					return m_Ptr;
-				}
-
-			private:
-				T*	m_Ptr;
-		};
-
-
-		// Sets the "long name" of given argument. This is always needed! TODO maybe make this a fixed first constructor argument
-		class long_name_t
-		{
-			public:
-				long_name_t(const std::string& p_str)
-					: m_Value(std::move(p_str))
-				{
-					// Make sure that long names are always non-empty
-					if(m_Value.empty())
-						throw std::runtime_error("Long names cannot be empty!");
-				}
-
-			public:
-				const std::string& value() const
-				{
-					return m_Value;
-				}
-
-			private:
-				std::string		m_Value;
-		};
-
+		// Sets the "long name" of given argument.
+		using long_name_t = unary_tag_t<::std::string, struct _long_name>;
 
 		// Sets the "short name" of given argument. (optional)
-		class short_name_t
-		{
-			public:
-				short_name_t(char p_str)
-					: m_Value(p_str)
-				{
+		using short_name_t = unary_tag_t<char, struct _short_name>;
 
-				}
-
-			public:
-				char value() const
-				{
-					return m_Value;
-				}
-
-			private:
-				char		m_Value;
-		};
-
-		class exclusive_t
-		{
-			public:
-				exclusive_t(const std::string& p_str)
-					: m_Value(p_str)
-				{
-
-				}
-				
-			public:
-				const std::string& value() const
-				{
-					return m_Value;
-				}
-
-			private:
-				std::string		m_Value;
-		};
-
+		// DEPRECATED
+		using exclusive_t = unary_tag_t<::std::string, struct _exclusive>;
 
 		// Sets the default value of given argument.
 		template< typename T >
-		class default_value_t
-		{
-			public:
-				default_value_t(const T& p_val) /* We are doing this by reference, since T could be some complex type */
-					: m_Value(p_val)
-				{
+		using default_value_t = unary_tag_t<T, struct _default_value>;
 
-				}
-
-			public:
-				const T& value() const
-				{
-					return m_Value;
-				}
-
-			private:
-				T	m_Value;
-		};
-
-
+		// Sets the maximum value of given argument.
 		template< typename T >
-		class max_t
-		{
-			public:
-				max_t(T p_val) // We do not expect complex types here => copy
-					: m_Value(p_val)
-				{
+		using max_t = unary_tag_t<T, struct _max>;
 
-				}
-
-			public:
-				const T& value() const
-				{
-					return m_Value;
-				}
-
-			private:
-				T	m_Value;
-		};
-
+		// Sets the minimum value of given argument.
 		template< typename T >
-		class min_t
-		{
-			public:
-				min_t(T p_val) 
-					: m_Value(p_val)
-				{
-
-				}
-	
-			public:
-				const T& value() const
-				{
-					return m_Value;
-				}
-
-			private:
-				T	m_Value;
-		};
+		using min_t = unary_tag_t<T, struct _min>;
+				
+		template< typename T >
+		using value_t = unary_tag_t<T, struct _value>;
 		
 		template< typename T >
-		class range_t
-		{
-			public:
-				range_t(T p_min, T p_max)
-					: m_Min(p_min), m_Max(p_max)
-				{
-					
-				}
-				
-			public:
-				const T& min() const
-				{
-					return m_Min;
-				}
-				
-				const T& max() const
-				{
-					return m_Max;
-				}
-				
-			private:
-				T m_Min;
-				T m_Max;
-		};
+		using reference_t = unary_tag_t<T*, struct _reference>;
 
-		template< typename E >
-		class enum_value_t
-		{
-			public:
-				enum_value_t(const std::string& p_key, E p_val)
-					: m_Key(p_key), m_Value(p_val)
-				{
+		template< typename T, typename U >
+		using key_value_t = binary_tag_t<T, U, struct _key_value>;
 
-				}
-	
-			public:
-				const E& value() const
-				{
-					return m_Value;
-				}
-
-				const std::string& key() const
-				{
-					return m_Key;
-				}
-
-			private:
-				std::string	m_Key;
-				E			m_Value;
-		};
+		template< typename T >
+		using range_t = binary_tag_t<T, T, struct _range>;
 	}
 
 
@@ -287,7 +143,7 @@ namespace cl
 	template< typename T >
 	static internal::reference_t<T> reference(T& p_val)
 	{
-		return internal::reference_t<T>(p_val);
+		return internal::reference_t<T>(::std::addressof(p_val));
 	}
 
 	template< typename T >
@@ -318,9 +174,33 @@ namespace cl
 	}
 
 	template< typename E >
-	static internal::enum_value_t<E> enum_value(const std::string& p_key, E p_val)
+	static internal::key_value_t<::std::string, E> enum_value(const std::string& p_key, E p_val)
 	{
-		return internal::enum_value_t<E>(p_key, p_val);
+		return internal::key_value_t<::std::string, E>(p_key, p_val);
+	}
+	
+	template< typename T, typename U >
+	static internal::key_value_t<T, U> key_value(const T& p_key, const U& p_val)
+	{
+		return internal::key_value_t<T, U>(p_key, p_val);
+	}
+	
+	template< typename T >
+	static internal::value_t<T> value(const T& p_val)
+	{
+		return internal::value_t<T>(p_val);
+	}
+	
+	template< typename E >
+	static internal::key_value_t<::std::string, E> enum_key_value(const std::string& p_key, E p_val)
+	{
+		return internal::key_value_t<::std::string, E>(p_key, p_val);
+	}
+	
+	template< typename E >
+	static internal::value_t<E> enum_value(E p_val)
+	{
+		return internal::value_t<E>(p_val);
 	}
 
 	template< typename T >

@@ -49,28 +49,88 @@ namespace cl
 		}
 	}
 
-	void handler::read(int argc, const char* argv[])
+	auto handler::print_help() const
+		-> void
 	{
-		std::ostringstream ss{};
-
-		for (int ix = 1; ix < argc; ++ix)
+		std::cout << "help" << std::endl;
+	}
+	
+	auto handler::read(int argc, const char* argv[])
+		-> bool
+	{
+		try
 		{
-			ss << std::quoted(argv[ix]) << ' ';
+			std::ostringstream ss{};
+
+			for (int ix = 1; ix < argc; ++ix)
+			{
+				ss << std::quoted(argv[ix]) << ' ';
+			}
+
+			internal::parser_state state{};
+
+			//pegtl::string_parser parser{ ss.str(), "" };
+			//parser.parse<internal::R_Commandline, internal::parser_action>(*this, state);
+			pegtl::parse<internal::R_Commandline, internal::parser_action>(ss.str(), "", *this, state);
+
+			// Call read_end on all arguments to refresh references etc
+			for (auto& arg : m_Arguments)
+				arg.second->read_end();
+
+			// Perform after-read tasks and checks
+			check_required();
+			check_exclusive();
+			
+			return true;
 		}
-
-		internal::parser_state state{};
-
-		//pegtl::string_parser parser{ ss.str(), "" };
-		//parser.parse<internal::R_Commandline, internal::parser_action>(*this, state);
-		pegtl::parse<internal::R_Commandline, internal::parser_action>(ss.str(), "", *this, state);
-
-		// Call read_end on all arguments to refresh references etc
-		for (auto& arg : m_Arguments)
-			arg.second->read_end();
-
-		// Check required arguments
-		check_required();
-		check_exclusive();
+		catch(const ::std::exception& p_ex)
+		{
+			// Handle error according to current error_mode.
+			return handle_error(p_ex);
+		}		
+	}
+	
+	auto handler::handle_error(const ::std::exception& p_ex)
+		-> bool
+	{
+		// Select action based on current error_mode
+		switch (m_Data.m_ErrorMode)
+		{
+			case internal::error_mode_::custom_handler:
+			{
+				// If no callback is registered rethrow exception
+				if(m_Data.m_ErrorHandler)
+				{
+					m_Data.m_ErrorHandler(p_ex.what());
+					break;
+				}
+				else rethrow_error();
+				break;
+			}
+			case internal::error_mode_::return_value:
+			{
+				return false;
+				break;
+			}
+			case internal::error_mode_::terminate:
+			{
+				if(m_Data.m_PrintHelp)
+					print_help();
+				::std::exit(EXIT_FAILURE);
+			}	
+			case internal::error_mode_::throw_exception:
+			default:
+			{
+				rethrow_error();
+				break;
+			}
+		}
+	}
+	
+	auto handler::rethrow_error()
+		-> void
+	{
+		::std::rethrow_exception(::std::current_exception());
 	}
 
 	auto handler::argument_long(const std::string& p_name) const -> internal::argument_base*

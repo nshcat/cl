@@ -6,7 +6,7 @@
 #include <sstream>
 #include <limits>
 #include "tags.hxx"
-#include "value_base.hxx"
+#include "readable_base.hxx"
 
 namespace cl
 {
@@ -14,16 +14,16 @@ namespace cl
 	{
 		template< typename T >
 		class arithmetic_base /* Base for arguments that supply an arithmetic value of type T */
-			: public value_base<T>
+			: public readable_base<T>
 		{
-			using Tbase = value_base<T>;
+			using TBase = readable_base<T>;
 			
 			static_assert(std::is_arithmetic<T>::value,
 				"T needs to be an arithmetic type!");
 			
 			public:
 				arithmetic_base()
-					: value_base<T>{}
+					: TBase{}, m_Clamp{false}, m_HasMax{false}, m_HasMin{false}
 				{
 				}
 				
@@ -39,7 +39,7 @@ namespace cl
 				}
 
 			public:
-				using Tbase::dispatch;
+				using TBase::dispatch;
 
 				void dispatch(const internal::min_t<T>& p_tag)
 				{
@@ -56,8 +56,8 @@ namespace cl
 				void dispatch(const internal::range_t<T>& p_tag)
 				{
 					m_HasMin = m_HasMax = true;
-					m_Min = p_tag.min();
-					m_Max = p_tag.max();
+					m_Min = p_tag.first();
+					m_Max = p_tag.second();
 				}
 
 				void dispatch(internal::clamp_t)

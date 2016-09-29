@@ -41,6 +41,7 @@ namespace cl
 				// Set default value
 				void dispatch(const internal::default_value_t<T>& p_tag) /* Could be complex object, so reference it here */
 				{
+					// TODO moving here could be feasable
 					m_Value = p_tag.value();
 				}
 
@@ -48,7 +49,7 @@ namespace cl
 				void dispatch(const internal::reference_t<T>& p_tag)
 				{
 					m_HasReference = true;
-					m_References.push_back(p_tag.ptr());
+					m_References.push_back(p_tag.value());
 				}
 				
 				// Provide better error message if reference is mismatching

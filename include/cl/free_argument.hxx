@@ -7,22 +7,28 @@
 #include <algorithm>
 #include "tags.hxx"
 #include "value_base.hxx"
+#include "default_reader.hxx"
 
 namespace cl
 {
-	class free_argument /* Flag element. Can be used without argument (flag) or with argument (bool value) */
-		: public internal::value_base<std::vector<std::string>>
+	// Will not throw if conversion is not possible.
+	template<	typename T = ::std::string,
+				typename TReader = default_reader<T>,
+				typename TContainer = ::std::vector<T>
+	>
+	class free_argument
+		: public internal::value_base<TContainer>
 	{
-		using Tbase = internal::value_base<std::vector<std::string>>;
+		using Tthis = free_argument<T, TReader, TContainer>;
+		using Tbase = internal::value_base<TContainer>;
 
 		public:
 			template< typename... Ttags >
 			free_argument(const Ttags&... p_tags)
 				: Tbase{}
 			{
-				// We will dispatch the tags without using argument_base::dispatch_all here
-				// since we do not want to check for long_name.
-				// TODO: maybe give dispatch_all a flag to indicate this to avoid duplication.
+				// argument_base::dispatch_all can't be used here since
+				// free_argument does not need a long_name to be set.
 				
 				// Dispatch all tags
 				std::initializer_list<int> tmp = { (dispatch(p_tags), 0)... };
@@ -41,22 +47,21 @@ namespace cl
 			void dispatch(const internal::short_name_t&) = delete;
 
 		public:
-			virtual void read(std::list<std::string>& p_vals, bool) override
+			virtual void read(::std::list<::std::string>& p_args, bool) override
 			{
-				// Write all arguments to internal vector
-				//this->m_Value = p_args;
-				std::copy(p_vals.begin(), p_vals.end(), std::back_inserter(this->m_Value));
+				// Consume all supplied strings and try to convert them to T
+				for(const auto& p_str: p_args)
+				{
+					this->m_Value.push_back(m_Reader.read(p_str));
+				}
 
-				// Consume all values
-				p_vals.clear();
+				// Clear input list since we consumed everything
+				p_args.clear();
 
 				this->m_Supplied = true;
 			}
-
-			virtual bool is_switch() override
-			{
-				return false;
-			}
-
+			
+		protected:
+			TReader m_Reader;
 	};
 }

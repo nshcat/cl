@@ -7,15 +7,15 @@
 #include <algorithm>
 #include <ut/throwf.hxx>
 #include "tags.hxx"
-#include "value_base.hxx"
+#include "readable_base.hxx"
 
 
 namespace cl
 {
 	class boolean_argument /* Flag element. Can be used without argument (flag) or with argument (bool value) */
-		: public internal::value_base<bool>
+		: public internal::readable_base<bool>
 	{
-		using Tbase = internal::value_base<bool>;
+		using Tbase = internal::readable_base<bool>;
 
 		public:
 			template< typename... Ttags >
@@ -26,29 +26,11 @@ namespace cl
 			}
 
 		public:
-			virtual void read(std::list<std::string>& p_val, bool p_IsAssignment) override
+			virtual void read(::std::list<::std::string>& p_val, bool p_isAssignment) override
 			{
-				if(p_IsAssignment) /* User provided actual value. Behave like value_base<bool>. */
+				if(p_isAssignment) /* User provided actual value. Behave like value_base<bool>. */
 				{
-					// We are garuantueed to have a value here.
-					std::string t_str{ p_val.front() };
-
-					// Consume value
-					p_val.pop_front();
-
-					// Try to parse as boolalpha.
-					std::transform(t_str.begin(), t_str.end(), t_str.begin(),
-						[](char c) -> char
-						{
-							return tolower(c);
-						}
-					);
-
-					if (t_str.compare("true") == 0)
-						this->m_Value = !m_IsInverse;
-					else if (t_str.compare("false") == 0)
-						this->m_Value = m_IsInverse;
-					else ut::throwf<std::runtime_error>("Supplied value for \"--%s\" invalid or out of range: \"%s\"", this->m_LongName.c_str(), t_str.c_str());
+					Tbase::read(p_val, p_isAssignment);
 				}
 				else /* Used as a flag. Behave like a switch. */
 				{

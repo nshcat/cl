@@ -1,40 +1,15 @@
 #pragma once
-// TODO to_string (virtual): 
-// TODO case_sensitive(true-/false)
-// Groups! (group_trigger, group_optional, group_required)
-// TODO better Exception macro that uses a stringstream to assemble a message. Wrap in do{}while(false).
-// TODO better, cleaner code *puke*. (Would be good to do a PEGTL Parser for arguments. Its easy to do (greedy matching von positionals)
-// -> maybe no AST, just directly invoke the read methods in the actions! (argument object list in the parser state)
-// Follow the normal inheritance approach. (Does dispatch work then?! Maybe if virtual dispatch methods!)
-// -> only read is virtual. value() is different vor each. handler<T> tries to get argument as T. value() is used there.
-// Maybe replace Exceptions? They cant really give good hints on what is missing.
-// Help printer. Uses category and description fields.
-// Put as much as possible in CXX files. No header-only library! (hides dependency on PEGTL)
-
-/* TODO
-namespace cl
-{
-	template< typename T >
-	auto reference(T& ref)    // <- automatically deduces template argument. Do this with every tag.
-	{
-		return cl::internal::reference_t<T>(ref);
-	}
-}
-
-
-*/
 
 #include <memory>
-#include <algorithm>
 #include <stdexcept>
+#include <exception>
 #include <string>
 #include <type_traits>
-#include <vector>
-#include <regex>
 #include <map>
 #include <ut/type_traits.hxx>
 #include <ut/observer_ptr.hxx>
 #include <ut/throwf.hxx>
+#include <ut/meta.hxx>
 
 #include "tags.hxx"
 #include "boolean_argument.hxx"
@@ -44,18 +19,42 @@ namespace cl
 #include "free_argument.hxx"
 #include "string_argument.hxx"
 #include "enum_argument.hxx"
+#include "handler_data.hxx"
+#include "options.hxx"
 
 namespace cl
 {
+	namespace internal
+	{
+		struct option_tag_t{};
+		struct argument_tag_t{};
+		struct invalid_tag_t{};
+		
+		template< typename T >
+		using is_option_tag = ::std::is_base_of<internal::option_base, T>;
+		
+		template< typename T >
+		using is_argument_tag = ::std::is_base_of<internal::argument_base, T>;
+		
+		template< typename T >
+		using tag_category_of_t =
+			ut::category_of_t<
+				T,
+				ut::category<option_tag_t, is_option_tag>,
+				ut::category<argument_tag_t, is_argument_tag>,
+				ut::category<invalid_tag_t>
+			>;		
+	}
+	
 	class handler
 	{
 		public:
 			template< typename... Targs,
-					  typename = std::enable_if_t< ! std::is_same<std::decay_t<ut::first_t<Targs...>>, handler>::value, void>	
+					  typename = ::std::enable_if_t< ! ::std::is_same<::std::decay_t<ut::first_t<Targs...>>, handler>::value, void>	
 			>
 			handler(Targs&&... p_args)
 			{
-				auto x = { (add(std::forward<Targs>(p_args)), 0)... };
+				auto x = { (dispatch(::std::forward<Targs>(p_args)), 0)... };
 				(void)x;
 			}
 
@@ -65,14 +64,15 @@ namespace cl
 			}
 
 		public:
-			void read(int argc, const char* argv[]);
+			bool read(int argc, const char* argv[]);
 
 		public:
 			// Official interface
 
+			auto print_help() const -> void;
+			
 			// Get argument by id
-			auto argument(size_t) const -> internal::argument_base*;
-
+			auto argument(std::size_t) const -> internal::argument_base*;
 
 			// Get argument by id convertible to size_t
 			template< typename T >
@@ -84,14 +84,12 @@ namespace cl
 				return argument(static_cast<std::size_t>(p_id));
 			}
 
-
 			// Get value by id convertible to size_t
 			template< typename T, typename E >
 			auto value(E p_id) const -> const T&
 			{
 				return argument(p_id)->template as<internal::value_base<T>>()->value();
 			}
-
 
 			template< typename T >
 			bool is_supplied(T p_id)
@@ -112,21 +110,44 @@ namespace cl
 
 		private:
 			template< typename T >
-			void add(T&& p_arg)
+			void dispatch(T&& p_arg)
 			{
-				static_assert(std::is_base_of<internal::argument_base, std::decay_t<T>>::value,
-					"Non-argument supplied in handler constructor!");
-
+				dispatch(internal::tag_category_of_t<::std::decay_t<T>>{}, ::std::forward<T>(p_arg));
+			}
+			
+			// Argument tag: Add to container.
+			template< typename T >
+			void dispatch(internal::argument_tag_t, T&& p_arg)
+			{
 				add_internal(std::make_unique<std::decay_t<T>>(std::forward<T>(p_arg)));
 			}
-
+				
+			// Option tag: Call apply.
+			template< typename T >
+			void dispatch(internal::option_tag_t, T&& p_arg)
+			{
+				p_arg.apply(m_Data);
+			}
+			
+			// Invalid tag supplied.
+			template< typename T >
+			void dispatch(internal::invalid_tag_t, T&&)
+			{
+				static_assert(ut::always_false_v<T>,
+					"Invalid object supplied in handler constructor!");
+			}
+			
 		private:
 			void add_internal(std::unique_ptr<internal::argument_base> p_ptr);
 
 			void check_required();
 			void check_exclusive();
+			
+			bool handle_error(const ::std::exception& p_ex);
+			[[noreturn]] void rethrow_error();
 	
 		private:
+			internal::handler_data m_Data;
 			std::map<std::string, std::unique_ptr<internal::argument_base>> m_Arguments;
 			std::map<size_t, ut::observer_ptr<internal::argument_base>> m_ArgMap;
 	};
