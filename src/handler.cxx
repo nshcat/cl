@@ -125,6 +125,8 @@ namespace cl
 				break;
 			}
 		}
+		
+		return false;
 	}
 	
 	auto handler::rethrow_error()

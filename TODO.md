@@ -17,6 +17,7 @@
 - [ ] Add a way to set a boolean value if the argument was supplied at least once. Naming candidates are `cl::supplied` and `cl::reference<bool>`. This would not clash with `cl::flag_argument` since it simply overrides the `dispatch` member function.
 - [ ] Add `cl::switch` (or other name: `cl::mode`), an argument that does not accept a value and simply sets the reference to a constant enum value.
 - [ ] Use `ut::string_view` wherever applicable. Maybe `pegtl::input` can be used to create string view. This would replace a lot of unneeded copies since the input is guarantueed to be valid until parsing is done.
+- [ ] Move `cl::handler` method implementations out of line in the same file to make reading the interface easier. User are inevetibly going to read `handler.hxx`.
 
 // Possible options:
 cl::title() // or application_name
