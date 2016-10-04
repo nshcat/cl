@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "handler_data.hxx"
 #include "value_option.hxx"
 
@@ -26,6 +27,18 @@ namespace cl
 	
 	static auto print_help(bool p_val)
 		-> internal::value_option<bool, &internal::handler_data::m_PrintHelp>
+	{
+		return { p_val };
+	}
+	
+	static auto application_name(const ::std::string& p_val)
+		-> internal::value_option<::std:string, &internal::handler_data::m_ApplicationName>
+	{
+		return { p_val };
+	}
+	
+	static auto application_version(const ::std::string& p_val)
+		-> internal::value_option<::std:string, &internal::handler_data::m_ApplicationVersion>
 	{
 		return { p_val };
 	}
