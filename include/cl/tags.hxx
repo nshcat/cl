@@ -112,6 +112,9 @@ namespace cl
 		using value_t = unary_tag_t<T, struct _value>;
 		
 		template< typename T >
+		using switch_value_t = unary_tag_t<T, struct _swvalue>;
+		
+		template< typename T >
 		using reference_t = unary_tag_t<T*, struct _reference>;
 
 		template< typename T, typename U >
@@ -189,6 +192,12 @@ namespace cl
 	static internal::value_t<T> value(const T& p_val)
 	{
 		return internal::value_t<T>(p_val);
+	}
+	
+	template< typename T >
+	static internal::switch_value_t<T> switch_value(const T& p_val)
+	{
+		return internal::switch_value_t<T>(p_val);
 	}
 	
 	template< typename E >
