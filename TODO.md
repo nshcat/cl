@@ -10,6 +10,7 @@
 - [ ] The name of global options may be not that perfect, but they can be changed later. Mainly, there is a choice regarding the style of them: Should `libcl` supply global settings that expect a value as choice (for example `cl::error_mode(exception/returnvalue)` vs `cl::use_exceptions(true/false)`  vs `cl::use_exceptions`). First has the disadvantage that we can't name an enum the same way (=> solve that)
 
 ###### Implementation
+- [ ] Make unary and binary tags handle values correctly: Accept via perfect forwarding, and consider moving out of a tag based on if it is a non POD. Additionally, tags should be passed by rvalue and have && markers on all members (like: `auto value() && -> T&&`)
 - [ ] Think about making all options compile-time by supplying enum values as template arguments (see `txt/options.md` for ideas)
 - [ ] Provide `cl::boolean_style(...)`  for `cl::boolean_argument` to allow numerical, boolalpha or both styles.
 - [ ] Handle argument tags with perfect forwarding

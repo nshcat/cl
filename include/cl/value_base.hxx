@@ -16,6 +16,10 @@ namespace cl
 		class value_base /* Base for arguments that supply a value of type T */
 			: public argument_base
 		{
+			// T has to be default-constructible for now.
+			static_assert(::std::is_default_constructible<T>::value,
+				"T needs to be default constructible!");
+			
 			public:
 				value_base()
 					: argument_base{}, m_HasReference(false), m_Value{}
@@ -27,12 +31,19 @@ namespace cl
 				{
 					return m_Value;
 				}
+				
+				bool has_default() const
+				{
+					return m_HasDefault;
+				}
 
 			public:
 				virtual void read_end() override
 				{
-					// Refresh references, if any
-					refresh_references();
+					// Refresh references only if either argument was 
+					// supplied or we have a default value
+					if(this->supplied() || has_default())
+						refresh_references();
 				}
 
 			public:
@@ -43,6 +54,7 @@ namespace cl
 				{
 					// TODO moving here could be feasable
 					m_Value = p_tag.value();
+					m_HasDefault = true;
 				}
 
 				// Set reference
@@ -69,6 +81,7 @@ namespace cl
 				}
 
 			protected:
+				bool				m_HasDefault;
 				T					m_Value;
 				bool				m_HasReference;
 				std::vector<T*>		m_References;
