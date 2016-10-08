@@ -29,3 +29,10 @@
 
 # VSCode directory
 .vscode/
+
+# VS "Open Folder" mode directory
+.vs/
+
+# VS Files
+*.VC.db
+*.VC.opendb
