@@ -24,7 +24,7 @@ project(cl)
 ## set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 # Include pegtl library
-add_subdirectory(pegtl)
+add_subdirectory(PEGTL)
 include_directories(${PEGTL_INCLUDE_DIRS})
 
 # Include ut library
