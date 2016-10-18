@@ -74,7 +74,7 @@ namespace cl
 					it = ::std::find_if(m_Map.begin(), m_Map.end(),
 						[&t_str, this](auto& pair) -> bool
 						{
-							return to_lower(pair.first) == t_str;
+							return this->to_lower(pair.first) == t_str;
 						});
 				}
 				else it = m_Map.find(p_vals.front());
