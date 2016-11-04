@@ -8,6 +8,7 @@
 - [ ] Add interface using `ut::optional`.
 - [ ] Consider adding a get-Interface based on `ut::string_view`.
 - [ ] The name of global options may be not that perfect, but they can be changed later. Mainly, there is a choice regarding the style of them: Should `libcl` supply global settings that expect a value as choice (for example `cl::error_mode(exception/returnvalue)` vs `cl::use_exceptions(true/false)`  vs `cl::use_exceptions`). First has the disadvantage that we can't name an enum the same way (=> solve that)
+- [ ] Add overloads for `value` and `argument` that take `cl::nothrow_t` and return `optional`.
 
 ###### Implementation
 - [ ] Make unary and binary tags handle values correctly: Accept via perfect forwarding, and consider moving out of a tag based on if it is a non POD. Additionally, tags should be passed by rvalue and have && markers on all members (like: `auto value() && -> T&&`)

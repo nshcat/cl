@@ -25,7 +25,6 @@ project(cl)
 
 # Include pegtl library
 add_subdirectory(PEGTL)
-include_directories(${PEGTL_INCLUDE_DIRS})
 
 # Include ut library
 add_subdirectory(ut)
@@ -37,7 +36,7 @@ file(GLOB SOURCE_FILES src/*.cxx)
 add_library(cl ${SOURCE_FILES})
 
 # Link to libut
-target_link_libraries(cl ${LIBUT_LIBRARIES})
+target_link_libraries(cl ${LIBUT_LIBRARIES} ${PEGTL_LIBRARIES})
 
 # Add top include directory as public dependency.
 # This automatically adds them to parent projects when linking to libcl.
