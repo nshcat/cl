@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <cctype>
 #include <ut/type_traits.hxx>
+#include <ut/array_view.hxx>
 
 
 namespace cl
@@ -117,6 +118,9 @@ namespace cl
 		template< typename T >
 		using reference_t = unary_tag_t<T*, struct _reference>;
 
+		template< typename T >
+		using view_t = unary_tag_t<::ut::array_view<T>, struct _view>;
+		
 		template< typename T, typename U >
 		using key_value_t = binary_tag_t<T, U, struct _key_value>;
 
@@ -147,6 +151,12 @@ namespace cl
 	static internal::reference_t<T> reference(T& p_val)
 	{
 		return internal::reference_t<T>(::std::addressof(p_val));
+	}
+	
+	template< typename T > /* TODO maybe rename to "reference_view" or "view" if this doesnt work */
+	static internal::view_t<T> reference(::ut::array_view<T> p_val)
+	{
+		return internal::view_t<T>(p_val);
 	}
 
 	template< typename T >
