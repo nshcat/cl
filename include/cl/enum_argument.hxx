@@ -20,10 +20,10 @@ namespace cl
 
 		public:
 			template< typename... Ttags >
-			enum_argument(const Ttags&... p_tags)
+			enum_argument(Ttags&&... p_tags)
 				: Tbase{}, m_IgnoreCase{ false }
 			{
-				this->template dispatch_all<enum_argument>(p_tags...);
+				this->template dispatch_all<enum_argument>(::std::forward<Ttags>(p_tags)...);
 			}
 
 		public:

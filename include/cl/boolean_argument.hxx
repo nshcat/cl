@@ -19,10 +19,10 @@ namespace cl
 
 		public:
 			template< typename... Ttags >
-			boolean_argument(const Ttags&... p_tags)
+			boolean_argument(Ttags&&... p_tags)
 				: Tbase{}, m_IsInverse(false)
 			{
-				this->dispatch_all<boolean_argument>(p_tags...);
+				this->dispatch_all<boolean_argument>(::std::forward<Ttags>(p_tags)...);
 			}
 
 		public:

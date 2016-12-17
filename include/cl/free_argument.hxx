@@ -24,14 +24,14 @@ namespace cl
 
 		public:
 			template< typename... Ttags >
-			free_argument(const Ttags&... p_tags)
+			free_argument(Ttags&&... p_tags)
 				: Tbase{}
 			{
 				// argument_base::dispatch_all can't be used here since
 				// free_argument does not need a long_name to be set.
 				
 				// Dispatch all tags
-				std::initializer_list<int> tmp = { (dispatch(p_tags), 0)... };
+				std::initializer_list<int> tmp = { (dispatch(::std::forward<Ttags>(p_tags)), 0)... };
 
 				// Silence "not used" warning
 				(void)tmp;

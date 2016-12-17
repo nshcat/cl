@@ -21,10 +21,10 @@ namespace cl
 
 		public:
 			template< typename... Ttags >
-			integer_argument(const Ttags&... p_tags)
+			integer_argument(Ttags&&... p_tags)
 				: Tbase{}
 			{
-				this->template dispatch_all<integer_argument<T>>(p_tags...);	
+				this->template dispatch_all<integer_argument<T>>(::std::forward<Ttags>(p_tags)...);	
 			}
 
 		public:

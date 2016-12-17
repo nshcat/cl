@@ -3,6 +3,7 @@
 #include <string>
 #include <list>
 #include <ut/type_traits.hxx>
+#include <ut/always_false.hxx>
 
 #include "tags.hxx"
 
@@ -28,10 +29,11 @@ namespace cl
 				{
 
 				}
+				
 			public:
 				// Dispatch all given tags.
 				template< typename T, typename... Ttags >
-				void dispatch_all(const Ttags&... p_tags)
+				void dispatch_all(Ttags&&... p_tags)
 				{
 					// Check for at least one long_name_t
 					static_assert(ut::contains<internal::long_name_t, std::decay_t<Ttags>...>::value,
@@ -41,7 +43,7 @@ namespace cl
 					auto t_ptr = static_cast<T*>(this);
 					
 					// Dispatch all tags
-					std::initializer_list<int> tmp = { (t_ptr->dispatch(p_tags), 0)... };
+					std::initializer_list<int> tmp = { (t_ptr->dispatch(::std::forward<Ttags>(p_tags)), 0)... };
 
 					// Silence "not used" warning
 					(void)tmp;
@@ -129,7 +131,7 @@ namespace cl
 				template< typename T >
 				void dispatch(T)
 				{
-					static_assert(sizeof(T) == 0,
+					static_assert(::ut::always_false_v<T>,
 						"Invalid tag for this argument type!");
 				}
 

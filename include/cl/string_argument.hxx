@@ -12,10 +12,10 @@ namespace cl
 
 		public:
 			template< typename... Ttags >
-			string_argument(const Ttags&... p_tags)
+			string_argument(Ttags&&... p_tags)
 				: Tbase{}
 			{
-				this->dispatch_all<string_argument>(p_tags...);
+				this->dispatch_all<string_argument>(::std::forward<Ttags>(p_tags)...);
 			}
 
 		public:

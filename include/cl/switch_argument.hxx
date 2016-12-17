@@ -19,10 +19,10 @@ namespace cl
 
 		public:
 			template< typename... Ttags >
-			switch_argument(const Ttags&... p_tags)
+			switch_argument(Ttags&&... p_tags)
 				: Tbase{}
 			{
-				this->template dispatch_all<Tthis>(p_tags...);	
+				this->template dispatch_all<Tthis>(::std::forward<Ttags>(p_tags)...);	
 			}
 			
 		public:
