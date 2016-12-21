@@ -5,6 +5,8 @@
 #include <string>
 #include <cstdlib>
 #include <algorithm>
+#include <ut/type_traits.hxx>
+#include <ut/always_false.hxx>
 #include "tags.hxx"
 #include "multi_base.hxx"
 #include "default_reader.hxx"
@@ -40,9 +42,17 @@ namespace cl
 			using Tbase::dispatch;
 
 			// Block long_name from being set // TODO better error message
-			void dispatch(const internal::long_name_t&) = delete;
+			void dispatch(const internal::long_name_t&)
+			{
+				static_assert(::ut::always_false_v<T>,
+					"free_argument does not allow name tags!");
+			}
 
 			// Block short_name from being set
-			void dispatch(const internal::short_name_t&) = delete;
+			void dispatch(const internal::short_name_t&)
+			{
+				static_assert(::ut::always_false_v<T>,
+					"free_argument does not allow name tags!");
+			}
 	};
 }
