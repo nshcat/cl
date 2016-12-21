@@ -3,6 +3,7 @@
 #include <type_traits>
 #include <vector>
 #include <algorithm>
+#include <functional>
 #include <stdexcept>
 #include <limits>
 #include <ut/always_false.hxx>
@@ -91,6 +92,7 @@ namespace cl
 			using const_view_type = ::ut::array_view<const T>;
 			using ref_container_type = ::std::vector<view_type>;
 			using cref_container_type = ::std::vector<::std::unique_ptr<type_base<T>>>;
+			using cb_container_type = ::std::vector<::std::function<void(const T&)>>;
 			
 			public:
 				using iterator = typename container_type::const_iterator;
@@ -208,6 +210,12 @@ namespace cl
 				{
 					m_Refs.push_back(p_tag.value());
 				}
+				
+				// Set callback
+				void dispatch(internal::callback_t<T> p_tag)
+				{
+					m_Callbacks.push_back(p_tag.value());
+				}
 							
 				// Set container reference
 				template< 	typename C,
@@ -232,6 +240,17 @@ namespace cl
 				}
 				
 			protected:
+				void do_callbacks() const
+				{
+					if(m_Values.size() <= 0)
+						return;
+					
+					for(const auto& t_cb: m_Callbacks)
+					{
+						t_cb( m_Values.back() );
+					}
+				}
+			
 				void refresh_references()
 				{
 					// Range references
@@ -265,6 +284,7 @@ namespace cl
 					{
 						// Parse value
 						m_Values.push_back(m_Reader.read(p_vals.front()));
+						do_callbacks();
 			
 						// Consume value from list
 						p_vals.pop_front();
@@ -285,7 +305,10 @@ namespace cl
 					{
 						// Parse values
 						for(const auto& t_str: p_vals)
+						{
 							m_Values.push_back(m_Reader.read(t_str));
+							do_callbacks();
+						}
 			
 						// Consume list
 						p_vals.clear();
@@ -298,6 +321,7 @@ namespace cl
 				container_type m_Values;
 				ref_container_type m_Refs;
 				cref_container_type m_ContainerRefs;
+				cb_container_type m_Callbacks;
 		};
 	}
 }

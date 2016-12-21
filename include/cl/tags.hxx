@@ -3,6 +3,7 @@
 #include <string>
 #include <stdexcept>
 #include <cctype>
+#include <functional>
 #include <ut/type_traits.hxx>
 #include <ut/array_view.hxx>
 
@@ -100,6 +101,10 @@ namespace cl
 		// Sets the default value of given argument.
 		template< typename T >
 		using default_value_t = unary_tag_t<T, struct _default_value>;
+		
+		// A callback for a supplied value.
+		template< typename T >
+		using callback_t = unary_tag_t<::std::function<void(const T&)>, struct _callback>;
 
 		// Sets the maximum value of given argument.
 		template< typename T >
@@ -229,6 +234,12 @@ namespace cl
 			"ID type has to be castable to size_t!");
 
 		return internal::id_t(static_cast<std::size_t>(t));
+	}
+	
+	template< typename T >
+	static internal::callback_t<T> callback(::std::function<void(const T&)> p_func)
+	{
+		return internal::callback_t<T>(p_func);
 	}
 
 	// Constant instances for simple tags
