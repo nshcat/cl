@@ -6,21 +6,20 @@
 #include <cstdlib>
 #include <algorithm>
 #include "tags.hxx"
-#include "value_base.hxx"
+#include "multi_base.hxx"
 #include "default_reader.hxx"
 
 namespace cl
 {
 	// Will not throw if conversion is not possible.
 	template<	typename T = ::std::string,
-				typename TReader = default_reader<T>,
-				typename TContainer = ::std::vector<T>
+				typename TReader = default_reader<T>
 	>
-	class free_argument
-		: public internal::value_base<TContainer>
+	class free_argument /* Argument type that consumes all values that are not consumed by anything else */
+		: public internal::multi_base<T, TReader, internal::multi_mode::positional>
 	{
-		using Tthis = free_argument<T, TReader, TContainer>;
-		using Tbase = internal::value_base<TContainer>;
+		using Tthis = free_argument<T, TReader>;
+		using Tbase = internal::multi_base<T, TReader, internal::multi_mode::positional>;
 
 		public:
 			template< typename... Ttags >
@@ -45,23 +44,5 @@ namespace cl
 
 			// Block short_name from being set
 			void dispatch(const internal::short_name_t&) = delete;
-
-		public:
-			virtual void read(::std::list<::std::string>& p_args, bool) override
-			{
-				// Consume all supplied strings and try to convert them to T
-				for(const auto& p_str: p_args)
-				{
-					this->m_Value.push_back(m_Reader.read(p_str));
-				}
-
-				// Clear input list since we consumed everything
-				p_args.clear();
-
-				this->m_Supplied = true;
-			}
-			
-		protected:
-			TReader m_Reader;
 	};
 }
