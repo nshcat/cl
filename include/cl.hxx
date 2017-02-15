@@ -4,6 +4,7 @@
 #include "cl/boolean_argument.hxx"
 #include "cl/integer_argument.hxx"
 #include "cl/positional_argument.hxx"
+#include "cl/flag_argument.hxx"
 #include "cl/free_argument.hxx"
 #include "cl/string_argument.hxx"
 #include "cl/handler.hxx"
