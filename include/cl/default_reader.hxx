@@ -106,7 +106,7 @@ namespace cl
 		};
 		
 		
-		// For strings there is nothing to be done. //
+		// For strings there is nothing to be done.
 		template< typename T >
 		class default_reader_impl <T, string_tag_t>
 		{
@@ -170,7 +170,13 @@ namespace cl
 						{
 							return static_cast<T>(t_val);
 						}
-						else throw ::std::out_of_range("");
+						else
+						{
+							ut::throwf<::std::out_of_range>(
+								"Failed to parse \"%s\" as integral value: Value out of range!",
+								p_str
+							);
+						}
 					}
 					catch(const ::std::invalid_argument&)
 					{
