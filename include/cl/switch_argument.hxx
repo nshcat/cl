@@ -50,7 +50,7 @@ namespace cl
 				m_SwValue = p_tag.value();
 			}
 			
-		private:
+		protected:
 			T m_SwValue{};
 	};
 }
