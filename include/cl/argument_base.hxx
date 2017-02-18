@@ -2,7 +2,9 @@
 
 #include <string>
 #include <list>
+#include <cctype>
 #include <ut/type_traits.hxx>
+#include <ut/throwf.hxx>
 #include <ut/always_false.hxx>
 
 #include "tags.hxx"
@@ -138,12 +140,33 @@ namespace cl
 				// Set long name.
 				void dispatch(const internal::long_name_t& p_tag)
 				{
-					m_LongName = p_tag.value();
+					const auto& t_str = p_tag.value();
+					
+					// Empty long names are not allowed
+					if(t_str.empty())
+						throw ::std::runtime_error("Invalid long name: Empty names not allowed!");
+					
+					// Unary predicate checking if a character is either
+					// alpha-numeric or '-' or '_'.
+					const auto t_test = [](const char x) -> bool
+					{
+						return 	(std::isalnum(x) != 0) ||
+								(x == '-') ||
+								(x == '_');								
+					};
+					
+					if(!::std::all_of(t_str.begin(), t_str.end(), t_test))
+						ut::throwf<::std::runtime_error>("Invalid long name: \"%s\"", t_str);
+					
+					m_LongName = t_str;
 				}
 
-				// Set long name.
+				// Set short name.
 				void dispatch(const internal::short_name_t& p_tag)
 				{
+					if(std::isalpha(p_tag.value()) == 0)
+						ut::throwf<::std::runtime_error>("Invalid short_name: %c", p_tag.value());
+					
 					m_ShortName = p_tag.value();
 					m_HasShortName = true;
 				}

@@ -172,16 +172,12 @@ namespace cl
 
 	static internal::long_name_t long_name(const std::string& p_str)
 	{
-		if (p_str.empty())
-			throw std::runtime_error("Invalid long name! (empty string not allowed)");
-		else return internal::long_name_t(p_str);
+		return internal::long_name_t(p_str);
 	}
 
 	static internal::short_name_t short_name(char p_chr)
 	{
-		if (!std::isalpha(p_chr))
-			throw std::runtime_error("Invalid short name!");  // TODO better message
-		else return internal::short_name_t(p_chr);
+		return internal::short_name_t(p_chr);
 	}
 
 	static internal::exclusive_t exclusive(const std::string& p_str)
