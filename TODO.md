@@ -1,6 +1,7 @@
 # libcl TODO list
 
 ###### General
+- [ ] Add custom error messages per tag. Maybe `cl::error_message(..)`.
 - [ ] Help printer. Requires cl::description etc to be implemented
 - [ ] Use static analyzer (cppcheck f.e.) to test the code
 - [ ] Check if there is a better way for tags to take strings as parameter. Maybe supply both r-value and l-value overloads.
