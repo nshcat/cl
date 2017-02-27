@@ -22,7 +22,7 @@ namespace cl
 			
 			public:
 				value_base()
-					: argument_base{}, m_HasReference(false), m_Value{}
+					: argument_base{}, m_HasDefault{false}, m_HasReference{false}, m_Value{}
 				{
 				}
 
