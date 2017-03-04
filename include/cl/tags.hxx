@@ -94,6 +94,12 @@ namespace cl
 
 		// Sets the "short name" of given argument. (optional)
 		using short_name_t = unary_tag_t<char, struct _short_name>;
+		
+		// Sets the description of given argument.
+		using description_t = unary_tag_t<::std::string, struct _description>;
+		
+		// Sets the category of given argument.
+		using category_t = unary_tag_t<::std::string, struct _category>;
 
 		// DEPRECATED
 		using exclusive_t = unary_tag_t<::std::string, struct _exclusive>;
@@ -178,6 +184,16 @@ namespace cl
 	static internal::short_name_t short_name(char p_chr)
 	{
 		return internal::short_name_t(p_chr);
+	}
+	
+	static internal::description_t description(const std::string& p_str)
+	{
+		return internal::description_t(p_str);
+	}
+	
+	static internal::category_t category(const std::string& p_str)
+	{
+		return internal::category_t(p_str);
 	}
 
 	static internal::exclusive_t exclusive(const std::string& p_str)

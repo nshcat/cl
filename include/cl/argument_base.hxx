@@ -18,12 +18,6 @@ namespace cl
 		{
 			public:
 				argument_base()
-					:	m_Supplied(false),
-						m_Required(false),
-						m_HasShortName(false),
-						m_ShortName(' '),
-						m_IsExclusive(false),
-						m_HasId(false)
 				{
 				}
 
@@ -109,6 +103,26 @@ namespace cl
 				const std::string& exclusive_group() const
 				{
 					return m_ExclusiveGroup;
+				}
+				
+				const std::string& description() const
+				{
+					return m_Description;
+				}
+				
+				bool has_description() const
+				{
+					return !m_Description.empty();
+				}
+				
+				const std::string& category() const
+				{
+					return m_Category;
+				}
+				
+				bool has_category() const
+				{
+					return !m_Category.empty();
 				}
 
 			public:
@@ -199,20 +213,21 @@ namespace cl
 
 
 			protected:
-				bool			m_Supplied;
-				bool			m_Required;
-				bool			m_HasShortName;
+				bool			m_Supplied{false};
+				bool			m_Required{false};
+				bool			m_HasShortName{false};
 
-				bool			m_IsExclusive;
-				std::string		m_ExclusiveGroup;
+				bool			m_IsExclusive{false};
+				::std::string	m_ExclusiveGroup{};
 
-				std::string		m_LongName;
-				char			m_ShortName;
+				::std::string	m_LongName{};
+				char			m_ShortName{};
 				
-				std::string		m_Description;
+				::std::string	m_Description{};
+				::std::string	m_Category{};
 
-				bool			m_HasId;
-				std::size_t		m_Id;
+				bool			m_HasId{false};
+				::std::size_t	m_Id{};
 		};
 	}
 }
