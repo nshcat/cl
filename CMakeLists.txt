@@ -20,9 +20,6 @@
 cmake_minimum_required(VERSION 3.1.3)
 project(cl)
 
-# C++ Standard
-## set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-
 # Include pegtl library
 add_subdirectory(PEGTL)
 
