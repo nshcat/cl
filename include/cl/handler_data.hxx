@@ -17,8 +17,10 @@ namespace cl
 		{
 			::std::string m_ApplicationName;
 			::std::string m_ApplicationVersion;
+			::std::string m_ApplicationUsage;
 			error_mode_ m_ErrorMode;
 			error_handler_ m_ErrorHandler;
+			help_mode_ m_HelpMode;
 			bool m_PrintHelp{true};
 		};
 	}
