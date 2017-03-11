@@ -21,7 +21,6 @@ namespace cl
 			error_mode_ m_ErrorMode;
 			error_handler_ m_ErrorHandler;
 			help_mode_ m_HelpMode;
-			bool m_PrintHelp{true};
 		};
 	}
 }

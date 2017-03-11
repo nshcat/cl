@@ -116,9 +116,8 @@ namespace cl
 			{
 				// Print out error message
 				::std::cout << p_ex.what() << std::endl;
-				
-				if(m_Data.m_PrintHelp)
-					print_help();
+
+				print_help();
 				::std::exit(EXIT_FAILURE);
 			}	
 			case internal::error_mode_::throw_exception:

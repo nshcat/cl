@@ -40,12 +40,6 @@ namespace cl
 		return { p_val };
 	}
 	
-	static auto print_help(bool p_val)
-		-> internal::value_option<bool, &internal::handler_data::m_PrintHelp>
-	{
-		return { p_val };
-	}
-	
 	// TODO maybe remove prefix here? Seems kinda redundand.
 	static auto application_name(const ::std::string& p_val)
 		-> internal::value_option<::std::string, &internal::handler_data::m_ApplicationName>
