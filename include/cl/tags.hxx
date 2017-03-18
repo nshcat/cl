@@ -101,9 +101,6 @@ namespace cl
 		// Sets the category of given argument.
 		using category_t = unary_tag_t<::std::string, struct _category>;
 
-		// DEPRECATED
-		using exclusive_t = unary_tag_t<::std::string, struct _exclusive>;
-
 		// Sets the default value of given argument.
 		template< typename T >
 		using default_value_t = unary_tag_t<T, struct _default_value>;
@@ -194,13 +191,6 @@ namespace cl
 	static internal::category_t category(const std::string& p_str)
 	{
 		return internal::category_t(p_str);
-	}
-
-	static internal::exclusive_t exclusive(const std::string& p_str)
-	{
-		if (p_str.empty())
-			throw std::runtime_error("Invalid exclusive group name! (empty string not allowed)");
-		else return internal::exclusive_t(p_str);
 	}
 
 	template< typename E >

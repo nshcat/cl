@@ -94,16 +94,6 @@ namespace cl
 				{
 					return m_Id;
 				}
-
-				bool exclusive() const
-				{
-					return m_IsExclusive;
-				}
-
-				const std::string& exclusive_group() const
-				{
-					return m_ExclusiveGroup;
-				}
 				
 				const std::string& description() const
 				{
@@ -197,13 +187,6 @@ namespace cl
 					m_Required = false;
 				}
 
-				// Set exclusive group.
-				void dispatch(const internal::exclusive_t& p_tag)
-				{
-					m_IsExclusive = true;
-					m_ExclusiveGroup = p_tag.value();
-				}
-
 				// Set id.
 				void dispatch(internal::id_t p_id)
 				{
@@ -216,9 +199,6 @@ namespace cl
 				bool			m_Supplied{false};
 				bool			m_Required{false};
 				bool			m_HasShortName{false};
-
-				bool			m_IsExclusive{false};
-				::std::string	m_ExclusiveGroup{};
 
 				::std::string	m_LongName{};
 				char			m_ShortName{};
