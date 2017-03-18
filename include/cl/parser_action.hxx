@@ -2,7 +2,7 @@
 
 #include <pegtl.hh>
 
-#include "handler.hxx"
+#include "command_base.hxx"
 #include "grammar.hxx"
 #include "positional_argument.hxx"
 #include "parser_state.hxx"
@@ -19,7 +19,7 @@ namespace cl
 		template< >
 		struct parser_action <R_ShortName>
 		{
-			static void apply(const pegtl::input& p_in, handler& p_hndlr, parser_state& p_state)
+			static void apply(const pegtl::input& p_in, command_base& p_hndlr, parser_state& p_state)
 			{
 				p_state.names().push_back(p_in.string());
 			}
@@ -28,7 +28,7 @@ namespace cl
 		template< >
 		struct parser_action <R_LongName>
 		{
-			static void apply(const pegtl::input& p_in, handler& p_hndlr, parser_state& p_state)
+			static void apply(const pegtl::input& p_in, command_base& p_hndlr, parser_state& p_state)
 			{
 				p_state.names().push_back(p_in.string());
 			}
@@ -37,7 +37,7 @@ namespace cl
 		template< >
 		struct parser_action <R_Value>
 		{
-			static void apply(const pegtl::input& p_in, handler& p_hndlr, parser_state& p_state)
+			static void apply(const pegtl::input& p_in, command_base& p_hndlr, parser_state& p_state)
 			{
 				p_state.values().push_back(p_in.string());
 			}
@@ -46,7 +46,7 @@ namespace cl
 		template< >
 		struct parser_action <R_Long>
 		{
-			static void apply(const pegtl::input& p_in, handler& p_hndlr, parser_state& p_state)
+			static void apply(const pegtl::input& p_in, command_base& p_hndlr, parser_state& p_state)
 			{
 				p_state.is_short() = false;
 			}
@@ -55,7 +55,7 @@ namespace cl
 		template< >
 		struct parser_action <R_Short>
 		{
-			static void apply(const pegtl::input& p_in, handler& p_hndlr, parser_state& p_state)
+			static void apply(const pegtl::input& p_in, command_base& p_hndlr, parser_state& p_state)
 			{
 				p_state.is_short() = true;
 			}
@@ -64,44 +64,46 @@ namespace cl
 		template< >
 		struct parser_action <R_Assignment>
 		{
-			static void apply(const pegtl::input& p_in, handler& p_hndlr, parser_state& p_state)
+			static void apply(const pegtl::input& p_in, command_base& p_hndlr, parser_state& p_state)
 			{
-				p_hndlr.argument_str(p_state.name(), p_state.is_short())->read(p_state.values(), true);
+				if(p_state.is_short())
+					p_hndlr.get(p_state.name().at(0))->read(p_state.values(), true);
+				else p_hndlr.get(p_state.name())->read(p_state.values(), true);
 			}
 		};
 
 		template< >
 		struct parser_action <R_Multi_Switch>
 		{
-			static void apply(const pegtl::input& p_in, handler& p_hndlr, parser_state& p_state)
+			static void apply(const pegtl::input& p_in, command_base& p_hndlr, parser_state& p_state)
 			{	
 				for (auto& t_name : p_state.names())
-					p_hndlr.argument_short(t_name.at(0))->read(p_state.values(), false);			
+					p_hndlr.get(t_name.at(0))->read(p_state.values(), false);			
 			}
 		};
 
 		template< >
 		struct parser_action <R_NonAssignment>
 		{
-			static void apply(const pegtl::input& p_in, handler& p_hndlr, parser_state& p_state)
+			static void apply(const pegtl::input& p_in, command_base& p_hndlr, parser_state& p_state)
 			{
-				auto ptr = p_hndlr.argument_str(p_state.name(), p_state.is_short());
-
-				ptr->read(p_state.values(), false);
+				if(p_state.is_short())
+					p_hndlr.get(p_state.name().at(0))->read(p_state.values(), false);
+				else p_hndlr.get(p_state.name())->read(p_state.values(), false);
 			}
 		};
 
 		template< >
 		struct parser_action <R_Argument>
 		{
-			static void apply(const pegtl::input& p_in, handler& p_hndlr, parser_state& p_state)
+			static void apply(const pegtl::input& p_in, command_base& p_hndlr, parser_state& p_state)
 			{
 				if (!p_state.values().empty())
 				{
 					// Try to add values to free_arguments. TODO solve without try catch
 					try
 					{
-						p_hndlr.argument_long("")->read(p_state.values(), false);
+						p_hndlr.get("")->read(p_state.values(), false);
 					}
 					catch (...)
 					{

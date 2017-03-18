@@ -1,6 +1,9 @@
-// handler_base: Base for all handler classes. Manages handler data and global option dispatch.
+// handler_base: Base for all handler classes. Encapsulates common handler operations:
+// Manages handler data and global option dispatch, aswell as error handling.
 
 #pragma once
+
+#include <type_traits>
 
 #include <ut/meta.hxx>
 #include <ut/type_traits.hxx>
@@ -11,33 +14,12 @@
 #include "tags.hxx"
 #include "option_base.hxx"
 #include "handler_data.hxx"
+#include "meta.hxx"
 
 namespace cl
 {
 	namespace internal
-	{
-		// Metaprogramming utilities used by commandline handlers
-		struct option_tag_t{};
-		struct argument_tag_t{};
-		struct invalid_tag_t{};
-		
-		template< typename T >
-		using is_option_tag = ::std::is_base_of<internal::option_base, T>;
-		
-		template< typename T >
-		using is_argument_tag = ::std::is_base_of<internal::argument_base, T>;
-		
-		template< typename T >
-		using tag_category_of_t =
-			ut::category_of_t<
-				T,
-				ut::category<option_tag_t, is_option_tag>,
-				ut::category<argument_tag_t, is_argument_tag>,
-				ut::category<invalid_tag_t>
-			>;
-		//
-		
-		
+	{	
 		class handler_base
 		{		
 			public:
@@ -53,15 +35,12 @@ namespace cl
 					dispatch(tag_category_of_t<::std::decay_t<T>>{}, ::std::forward<T>(p_arg));
 				}
 			
-			protected:
+			protected:	/* Option dispatching */
 				template< typename TType, typename T >
-				auto dispatch(TType&&, T&&)
+				auto dispatch(TType, T&&)
 					-> void
 				{
-					static_assert(ut::always_false_v<T>,
-						"Tried to dispatch invalid type with handler_base!"
-						"(This should not happen)"
-					);
+					// Just sink it
 				}
 				
 				template< typename T >
@@ -70,6 +49,17 @@ namespace cl
 				{
 					p_arg.apply(m_Data);
 				}
+				
+			protected:	/* Error handling */
+				auto handle_error(const ::std::exception& p_ex)
+					-> bool;
+					
+				[[noreturn]] auto rethrow_error()
+					-> void;
+				
+			protected:	/* Help handling */
+				auto print_help()
+					-> void;
 				
 			protected:
 				handler_data m_Data;
