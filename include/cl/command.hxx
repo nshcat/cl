@@ -25,7 +25,7 @@
 #include "meta.hxx"
 
 namespace cl
-{
+{	
 	template< typename TEnum >
 	class command
 		: public internal::command_base
@@ -110,11 +110,15 @@ namespace cl
 				static_assert(ut::always_false_v<T>,
 					"Invalid object supplied in handler constructor!");
 			}
+	
 			
-		protected:
+		protected:		
 			enum_type m_Id;
 			::std::string m_Name;
 
 			bool m_HasId{false};
 	};
+	
+	template< typename TEnum >
+	using command_view = ut::observer_ptr<command<TEnum>>;
 }
