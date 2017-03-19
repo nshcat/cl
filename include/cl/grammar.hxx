@@ -2,7 +2,7 @@
 
 #include <pegtl.hh>
 
-#include "handler.hxx"
+#include "command.hxx"
 #include "parser_state.hxx"
 
 namespace cl
@@ -19,11 +19,11 @@ namespace cl
 						template< typename... > class Control,
 						typename... States
 					>
-			static bool match( pegtl::input&, handler& p_hndlr, parser_state& p_state, States&... )
+			static bool match( pegtl::input&, command_base& p_hndlr, parser_state& p_state, States&... )
 			{
 				// This assumes that a short name was already matched.
 				// Check if argument with given short name is a switch type argument.
-				return p_hndlr.argument_short(p_state.short_name())->is_switch();
+				return p_hndlr.get(p_state.short_name())->is_switch();
 			}
 		};
 
