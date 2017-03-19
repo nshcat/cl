@@ -141,10 +141,17 @@ namespace cl
 				return m_CmdMap.count(p_name) >= 1;
 			}
 			
-			auto supplied_command() const
+			auto supplied_id() const
 				-> enum_type
 			{
 				return m_GivenCommand;
+			}
+			
+			// TODO const correctness
+			auto command()
+				-> command_view
+			{
+				return m_IdMap[supplied_id()];
 			}
 				
 		private:
