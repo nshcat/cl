@@ -105,7 +105,7 @@ namespace cl
 			
 			// Invalid tag supplied.
 			template< typename T >
-			void dispatch(internal::invalid_tag_t, T&&)
+			void dispatch(internal::invalid_tag_t, const T&)
 			{
 				static_assert(ut::always_false_v<T>,
 					"Invalid object supplied in handler constructor!");
