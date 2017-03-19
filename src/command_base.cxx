@@ -50,7 +50,7 @@ namespace cl
 				m_IdMap[p_ptr->id()] = ut::make_observer<internal::argument_base>(p_ptr.get());
 
 			// Add argument and hand over ownership
-			m_ArgMap[p_ptr->long_name()] = std::move(p_ptr);
+			m_ArgMap[p_ptr->long_name()] = ::std::move(p_ptr);
 		}
 		
 		

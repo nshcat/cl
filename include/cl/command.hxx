@@ -68,6 +68,12 @@ namespace cl
 			{
 				return m_Name;
 			}
+			
+			auto has_id() const
+				-> bool
+			{
+				return m_HasId;
+			}
 
 		private:
 			template< typename T >
@@ -94,6 +100,7 @@ namespace cl
 			{
 				m_Name = p_kvp.first();
 				m_Id = p_kvp.second();
+				m_HasId = true;
 			}
 			
 			// Invalid tag supplied.
@@ -103,13 +110,11 @@ namespace cl
 				static_assert(ut::always_false_v<T>,
 					"Invalid object supplied in handler constructor!");
 			}
-					
-			/*bool handle_error(const ::std::exception& p_ex);
-			[[noreturn]] void rethrow_error();
-			*/
 			
 		protected:
 			enum_type m_Id;
-			::std::string m_Name;		
+			::std::string m_Name;
+
+			bool m_HasId{false};
 	};
 }
