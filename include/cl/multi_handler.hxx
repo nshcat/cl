@@ -16,24 +16,7 @@
 #include "meta.hxx"
 
 namespace cl
-{
-	namespace internal
-	{
-		template< typename TEnum >
-		struct enum_hash
-		{
-			static_assert(::std::is_enum<TEnum>::value,
-				"enum_hash: TEnum has to be an enumeration type!");
-			
-			auto operator()(TEnum p_val) const
-				-> ::std::size_t
-			{
-				return ut::make_hash(ut::enum_cast(p_val));
-			}
-		};
-	}
-	
-	
+{	
 	template< typename TEnum >
 	class multi_handler
 		: 	public internal::handler_base
@@ -42,11 +25,10 @@ namespace cl
 		using input_type = ut::array_view<const char*>;
 		using base_type = internal::handler_base;
 		using enum_type = TEnum;
-		using hash_type = internal::enum_hash<enum_type>;
 		using command_type = command<enum_type>;
 		using command_ptr = ::std::unique_ptr<command_type>;
 		using command_view = ut::observer_ptr<command_type>;
-		using id_map_type = ::std::map<enum_type, command_view, hash_type>;
+		using id_map_type = ::std::map<enum_type, command_view>;
 		using command_map_type = ::std::map<::std::string, command_ptr>;
 		
 		private:
