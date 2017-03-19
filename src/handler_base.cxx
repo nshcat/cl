@@ -57,10 +57,31 @@ namespace cl
 			::std::rethrow_exception(::std::current_exception());
 		}
 		
-		auto handler_base::print_help()
+		auto handler_base::print_help() const
 			-> void
 		{
-			::std::cout << "Help placeholder" << ::std::endl;
+			if(m_Data.m_HelpMode != internal::help_mode_::show_none)
+			{
+				// Print usage first
+				if(m_Data.m_HelpMode & internal::help_mode_::show_usage)
+					print_usage();
+				
+				if(m_Data.m_HelpMode & internal::help_mode_::show_summary)
+					print_summary();
+			}
+		}
+		
+		auto handler_base::print_usage() const
+			-> void
+		{
+			if(!m_Data.m_ApplicationUsage.empty())
+				std::cout << m_Data.m_ApplicationUsage << std::endl;
+		}
+		
+		auto handler_base::print_summary() const
+			-> void
+		{
+			
 		}
 	}
 }
