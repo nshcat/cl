@@ -1,6 +1,7 @@
 #pragma once
 
 #include <type_traits>
+#include <vector>
 #include <map>
 
 #include <ut/type_traits.hxx>
@@ -14,6 +15,7 @@
 #include "handler_base.hxx"
 #include "command.hxx"
 #include "meta.hxx"
+#include "tags.hxx"
 
 namespace cl
 {	
@@ -30,6 +32,9 @@ namespace cl
 		using command_view = ut::observer_ptr<command_type>;
 		using id_map_type = ::std::map<enum_type, command_view>;
 		using command_map_type = ::std::map<::std::string, command_ptr>;
+		
+		using command_ref = ut::observer_ptr<command_view>;
+		using enum_ref = ut::observer_ptr<enum_type>;
 		
 		private:
 			template< typename T >
@@ -85,8 +90,10 @@ namespace cl
 					const auto t_name = p_in[0];
 					
 					if(has_command(t_name))
-					{
-						command(t_name)->read(p_in);
+					{					
+						const auto t_cmd = command(t_name);			
+						t_cmd->read(p_in);
+						m_GivenCommand = t_cmd->id();
 					}
 					else
 					{
@@ -107,7 +114,11 @@ namespace cl
 			auto read(int p_argc, const char** p_argv)
 				-> bool
 			{
-				return read(ut::make_view<const char*>(p_argv+1, p_argc-1));
+				const auto t_ret = read(ut::make_view<const char*>(p_argv+1, p_argc-1));
+				
+				refresh_references();
+				
+				return t_ret;			
 			}
 				
 		public:
@@ -178,13 +189,50 @@ namespace cl
 				add(::std::make_unique<std::decay_t<T>>(::std::forward<T>(p_arg)));
 			}
 			
+			auto dispatch(internal::invalid_tag_t, const internal::reference_t<enum_type>& p_ref)
+				-> void
+			{
+				m_IdReferences.push_back(
+					ut::make_observer<enum_type>(p_ref.value())
+				);
+			}
+			
+			auto dispatch(internal::invalid_tag_t, const internal::reference_t<command_view>& p_ref)
+				-> void
+			{
+				m_CmdReferences.push_back(
+					ut::make_observer<command_view>(p_ref.value())
+				);
+			}			
+			
 			// Invalid tag
 			template< typename T >
-			auto dispatch(internal::invalid_tag_t, T&&)
+			auto dispatch(internal::invalid_tag_t, const T&)
 				-> void			
 			{
 				static_assert(ut::always_false_v<T>,
 				"multi_handler: Invalid tag in constructor!");
+			}
+			
+		private:
+			auto refresh_references()
+				-> void
+			{
+				// Id
+				for(auto t_ref: m_IdReferences)
+				{
+					*t_ref = m_GivenCommand;
+				}
+				
+				// Command view
+				const auto t_view = ut::make_observer<command_type>(
+					m_IdMap[m_GivenCommand].get()
+				);
+				
+				for(auto t_ref: m_CmdReferences)
+				{
+					*t_ref = t_view;
+				}
 			}
 			
 		private:
@@ -207,5 +255,8 @@ namespace cl
 			id_map_type m_IdMap;
 			command_map_type m_CmdMap;
 			enum_type m_GivenCommand;
+			
+			::std::vector<enum_ref> m_IdReferences;
+			::std::vector<command_ref> m_CmdReferences;
 	};
 }
