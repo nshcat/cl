@@ -224,6 +224,12 @@ namespace cl
 	}
 	
 	template< typename E >
+	static internal::key_value_t<::std::string, E> command_id(const std::string& p_key, E p_val)
+	{
+		return internal::key_value_t<::std::string, E>(p_key, p_val);
+	}
+	
+	template< typename E >
 	static internal::value_t<E> enum_value(E p_val)
 	{
 		return internal::value_t<E>(p_val);
