@@ -140,6 +140,12 @@ namespace cl
 			{
 				return m_CmdMap.count(p_name) >= 1;
 			}
+			
+			auto supplied_command() const
+				-> enum_type
+			{
+				return m_GivenCommand;
+			}
 				
 		private:
 			template< typename T >
@@ -193,5 +199,6 @@ namespace cl
 		private:
 			id_map_type m_IdMap;
 			command_map_type m_CmdMap;
+			enum_type m_GivenCommand;
 	};
 }
