@@ -77,26 +77,30 @@ namespace cl
 
 		private:
 			template< typename T >
-			void dispatch(T&& p_arg)
+			auto dispatch(T&& p_arg)
+				-> void
 			{
 				dispatch(internal::tag_category_of_t<::std::decay_t<T>>{}, ::std::forward<T>(p_arg));
 			}
 			
 			// Argument tag: Add to container.
 			template< typename T >
-			void dispatch(internal::argument_tag_t, T&& p_arg)
+			auto dispatch(internal::argument_tag_t, T&& p_arg)
+				-> void
 			{
 				this->add(::std::make_unique<std::decay_t<T>>(::std::forward<T>(p_arg)));
 			}
 				
 			// Option tag: ignore.
 			template< typename T >
-			void dispatch(internal::option_tag_t, T&& p_arg)
+			auto dispatch(internal::option_tag_t, T&& p_arg)
+				-> void
 			{
 			}
 			
 			// Matching key-value tag: Set name and id.
-			void dispatch(internal::invalid_tag_t, const internal::key_value_t<::std::string, enum_type>& p_kvp)
+			auto dispatch(internal::invalid_tag_t, const internal::key_value_t<::std::string, enum_type>& p_kvp)
+				-> void
 			{
 				m_Name = p_kvp.first();
 				m_Id = p_kvp.second();
@@ -105,7 +109,8 @@ namespace cl
 			
 			// Invalid tag supplied.
 			template< typename T >
-			void dispatch(internal::invalid_tag_t, const T&)
+			auto dispatch(internal::invalid_tag_t, const T&)
+				-> void
 			{
 				static_assert(ut::always_false_v<T>,
 					"Invalid object supplied in handler constructor!");
