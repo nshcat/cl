@@ -67,7 +67,7 @@ namespace cl
 			else
 			{
 				ut::throwf<::std::runtime_error>(
-					"Tried to retrieve nonexistant argument"
+					"Unknown commandline argument:"
 					" \"--%s\"",
 					p_str
 				);
@@ -92,7 +92,7 @@ namespace cl
 			else
 			{
 				ut::throwf<::std::runtime_error>(
-					"Tried to retrieve nonexistant argument"
+					"Unknown commandline argument:"
 					" \"-%c\"",
 					p_chr
 				);
@@ -112,7 +112,7 @@ namespace cl
 			else
 			{
 				ut::throwf<::std::runtime_error>(
-					"Tried to retrieve nonexistant argument with id"
+					"Unknown commandline argument id:"
 					" \"%u\"",
 					p_id
 				);
