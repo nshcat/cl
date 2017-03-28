@@ -96,6 +96,9 @@ namespace cl
 			auto dispatch(internal::option_tag_t, T&& p_arg)
 				-> void
 			{
+				// At this point, all option tags are in a moved-from state and must not be accessed.
+				// We sink them here. This weird design is needed to greatly simplify the design of the non-multi handler:
+				// It does not have to actually remove the already dispatched option tags from the command constructor call.
 			}
 			
 			// Matching key-value tag: Set name and id.

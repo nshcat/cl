@@ -64,8 +64,6 @@ namespace cl
 			>
 			multi_handler(Ts&&... p_args)
 			{
-				// It is ok to access option tags here despite being forwarded beforehand,
-				// because cl::command will ignore all option tags completely.
 				const auto x = { (dispatch(::std::forward<Ts>(p_args)), 0)... };
 				(void)x;
 			}

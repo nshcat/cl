@@ -1,3 +1,8 @@
+//  command_base: This class contains the actual parsing code for a command line, aswell as
+//  related bookkeeping and support routines.
+//  It is not a template to hide the PEGTL dependency. This class should never be used directly.
+//  The user-visible interface is called command<T>.
+
 #pragma once
 
 #include <algorithm>

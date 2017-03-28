@@ -1,5 +1,11 @@
-// handler_base: Base for all handler classes. Encapsulates common handler operations:
-// Manages handler data and global option dispatch, aswell as error handling.
+// handler_base: Base for all handler classes.
+//
+// This class encapsulates functionality common to all types of handlers:
+//	It
+//	- manages handler data like application name, version, error handling and help settings
+//	- dispatches option tags
+//	- does error handling
+//	- does help handling
 
 #pragma once
 
