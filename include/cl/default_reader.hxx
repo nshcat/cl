@@ -97,7 +97,7 @@ namespace cl
 					
 					// Throw if failure, otherwise return value.
 					if(m_Stream.fail())
-						ut::throwf<::std::runtime_error>("Failed to parse \"%s\": Invalid value!", p_str);
+						ut::throwf<::std::runtime_error>("\"%s\" has wrong format!", p_str);
 					else return t_tmp;
 				}
 		
@@ -139,7 +139,7 @@ namespace cl
 						t_tmp = true;
 					else if(t_str == "false" || t_str == "0")
 						t_tmp = false;
-					else ut::throwf<::std::runtime_error>("Failed to parse \"%s\" as boolean value: Invalid input!", p_str);
+					else ut::throwf<::std::runtime_error>("\"%s\" is not a boolean value!", p_str);
 										
 					return t_tmp;
 				}			
@@ -173,7 +173,7 @@ namespace cl
 						else
 						{
 							ut::throwf<::std::out_of_range>(
-								"Failed to parse \"%s\" as integral value: Value out of range!",
+								"\"%s\" is out of range for target integral type!",
 								p_str
 							);
 						}
@@ -181,14 +181,14 @@ namespace cl
 					catch(const ::std::invalid_argument&)
 					{
 						ut::throwf<::std::runtime_error>(
-							"Failed to parse \"%s\" as integral value: Invalid format!",
+							"\"%s\" is not an integral value!",
 							p_str
 						);
 					}
 					catch(const ::std::out_of_range&)
 					{
 						ut::throwf<::std::runtime_error>(
-							"Failed to parse \"%s\" as integral value: Value out of range!",
+							"\"%s\" is out of range for target integral type!",
 							p_str
 						);
 					}

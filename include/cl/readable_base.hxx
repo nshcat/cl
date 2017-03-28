@@ -31,18 +31,31 @@ namespace cl
 				{
 					if(p_vals.empty())
 					{
-						ut::throwf<std::runtime_error>(
-							"No value supplied for given argument \"--%s\"!", this->m_LongName
+						ut::throwf<::std::runtime_error>(
+							"Given argument \"--%s\" expects value!", this->m_LongName
 						);
 					}
 					else
 					{
-						// Parse value
-						this->m_Value = m_Reader.read(p_vals.front());
-			
-						// Consume value from list
-						p_vals.pop_front();
-						this->m_Supplied = true;
+						try
+						{
+							// Parse value
+							this->m_Value = m_Reader.read(p_vals.front());
+				
+							// Consume value from list
+							p_vals.pop_front();
+							this->m_Supplied = true;
+						}
+						catch(const ::std::exception& p_ex)
+						{
+							// Rethrowing is kinda ugly, but we need the name of the current argument
+							// which the reader cannot know to deliver a clear error message.
+							ut::throwf<::std::runtime_error>(
+								"Couldn't parse given value for argument \"--%s\": %s",
+								this->m_LongName,
+								p_ex.what()
+							);
+						}
 					}
 				}
 			
