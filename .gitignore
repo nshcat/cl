@@ -33,6 +33,10 @@
 # VS "Open Folder" mode directory
 .vs/
 
+# Build directories
+bld/
+build/
+
 # VS Files
 *.VC.db
 *.VC.opendb
