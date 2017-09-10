@@ -23,6 +23,7 @@
 #include "local_option.hxx"
 #include "handler_data.hxx"
 #include "meta.hxx"
+#include "argument_base.hxx"
 
 namespace cl
 {
@@ -61,12 +62,12 @@ namespace cl
 			protected:	/* Error handling */
 				// Handle help/usage display for given command, aswell as error mode
 				auto handle_error(const ::std::exception& p_ex, const command_base& p_cmd)
-					-> bool;
+					-> void;
 					
 				// Only do error mode stuff. This is used when no command can be supplied, 
 				// e.g. when the user supplied a wrong command name
 				auto handle_error(const ::std::exception& p_ex)
-					-> bool;
+					-> void;
 					
 				[[noreturn]] auto rethrow_error()
 					-> void;

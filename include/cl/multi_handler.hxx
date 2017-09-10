@@ -112,7 +112,8 @@ namespace cl
 				}
 				catch(const ::std::exception& p_ex)
 				{
-					return this->handle_error(p_ex);
+					this->handle_error(p_ex);
+					return false;
 				}	
 			}
 				
@@ -191,7 +192,9 @@ namespace cl
 			auto dispatch(command_tag_t, T&& p_arg)
 				-> void
 			{
-				add(::std::make_unique<std::decay_t<T>>(::std::forward<T>(p_arg)));
+				auto t_ptr = ::std::make_unique<std::decay_t<T>>(::std::forward<T>(p_arg));
+				t_ptr->set_global_data({&this->m_Data});	
+				add(::std::move(t_ptr));
 			}
 			
 			auto dispatch(internal::invalid_tag_t, const internal::reference_t<enum_type>& p_ref)

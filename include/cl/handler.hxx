@@ -45,6 +45,8 @@ namespace cl
 				// because cl::command will ignore all global option tags completely.
 				const auto x = { (this->base_type::dispatch(::std::forward<Ts>(p_args)), 0)... };
 				(void)x;
+				
+				this->set_global_data({&this->m_Data});
 			}
 			
 			handler() = delete;

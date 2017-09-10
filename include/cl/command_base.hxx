@@ -13,6 +13,7 @@
 #include <ut/array_view.hxx>
 #include <ut/string_view.hxx>
 
+#include "argument_base.hxx"
 #include "handler_data.hxx"
 #include "command_data.hxx"
 
@@ -23,6 +24,7 @@ namespace cl
 		class command_base
 		{
 			using argument_ptr = ::std::unique_ptr<internal::argument_base>;
+			using global_data_ptr = ut::observer_ptr<const handler_data>;
 			using argument_view = ut::observer_ptr<internal::argument_base>;
 			using const_argument_view = ut::observer_ptr<const internal::argument_base>;
 			using input_type = ut::array_view<const char*>;
@@ -175,10 +177,17 @@ namespace cl
 				// Prints a usage string, if specified
 				auto print_usage() const
 					-> void;
+					
+			public:
+				auto set_global_data(global_data_ptr p_ptr)
+					-> void;
 				
 			public:
 				auto local_data() const
 					-> const command_data&;
+					
+				auto global_data() const
+					-> const handler_data&;
 					
 			protected:
 				auto local_data()
@@ -189,6 +198,7 @@ namespace cl
 					-> void;
 			
 			protected:
+				global_data_ptr m_GlobalDataPtr;
 				argument_map_type m_ArgMap;
 				id_map_type m_IdMap;
 				command_data m_LocalData;

@@ -228,16 +228,24 @@ namespace cl
 			return m_LocalData;
 		}
 		
+		auto command_base::global_data() const
+			-> const handler_data&
+		{
+			if(m_GlobalDataPtr)
+				return *m_GlobalDataPtr;
+			else throw ::std::runtime_error("Tried to access null global data ptr!");
+		}
+		
 		auto command_base::print_help() const
 			-> void
 		{
-			if(m_LocalData.m_HelpMode != internal::help_mode_::show_none)
+			if(global_data().m_HelpMode != internal::help_mode_::show_none)
 			{
 				// Print usage first
-				if(m_LocalData.m_HelpMode & internal::help_mode_::show_usage)
+				if(global_data().m_HelpMode & internal::help_mode_::show_usage)
 					print_usage();
 				
-				if(m_LocalData.m_HelpMode & internal::help_mode_::show_summary)
+				if(global_data().m_HelpMode & internal::help_mode_::show_summary)
 					print_summary();
 			}
 		}
