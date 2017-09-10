@@ -3,32 +3,30 @@
 #include <utility>
 #include <type_traits>
 #include <ut/type_traits.hxx>
-#include "handler_data.hxx"
-#include "option_base.hxx"
 
 namespace cl
 {
 	namespace internal
 	{
-		template< typename V, V handler_data::* Ptr >
+		template< typename TBase, typename TTarget, typename TValue, TValue TTarget::* Ptr >
 		class value_option
-			: public option_base
+			: public TBase
 		{
 			public:
-				value_option(const V& p_val)
+				value_option(const TValue& p_val)
 					: m_Val(p_val)
 				{
 						
 				}
 				
 			public:
-				auto apply(handler_data& p_data) const &
+				auto apply(TTarget& p_data) const &
 					-> void
 				{
 					p_data.*Ptr = m_Val;
 				}
 
-				auto apply(handler_data& p_data) &&
+				auto apply(TTarget& p_data) &&
 					-> void
 				{
 					// this instance is a rvalue, take advantage by moving value
@@ -36,7 +34,7 @@ namespace cl
 				}
 			
 			private:
-				V m_Val;
+				TValue m_Val;
 		};
 	}
 }
