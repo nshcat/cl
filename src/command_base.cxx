@@ -227,5 +227,32 @@ namespace cl
 		{
 			return m_LocalData;
 		}
+		
+		auto command_base::print_help() const
+			-> void
+		{
+			if(m_LocalData.m_HelpMode != internal::help_mode_::show_none)
+			{
+				// Print usage first
+				if(m_LocalData.m_HelpMode & internal::help_mode_::show_usage)
+					print_usage();
+				
+				if(m_LocalData.m_HelpMode & internal::help_mode_::show_summary)
+					print_summary();
+			}
+		}
+		
+		auto command_base::print_usage() const
+			-> void
+		{
+			if(!m_LocalData.m_Usage.empty())
+				std::cout << m_LocalData.m_Usage << std::endl;
+		}
+		
+		auto command_base::print_summary() const
+			-> void
+		{
+			
+		}
 	}
 }

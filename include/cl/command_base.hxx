@@ -164,6 +164,19 @@ namespace cl
 				}
 				
 			public:
+				// Prints help according to help_mode
+				auto print_help() const
+					-> void;
+					
+				// Prints a summary of all registered arguments
+				auto print_summary() const
+					-> void;
+					
+				// Prints a usage string, if specified
+				auto print_usage() const
+					-> void;
+				
+			public:
 				auto local_data() const
 					-> const command_data&;
 					

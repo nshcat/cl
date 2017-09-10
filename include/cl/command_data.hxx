@@ -13,7 +13,7 @@ namespace cl
 		// by local option tags
 		struct command_data
 		{
-			help_mode_ m_HelpMode;
+			::std::string m_Usage;
 		};
 	}
 }

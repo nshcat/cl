@@ -10,6 +10,15 @@ namespace cl
 {
 	namespace internal
 	{
+		auto handler_base::handle_error(const ::std::exception& p_ex, const command_base& p_cmd)
+				-> bool
+		{
+			if(p_cmd.local_data().m_HelpMode & internal::help_mode_::on_error)
+				p_cmd.print_help();
+		
+			const auto t_result = handle_error(p_ex);		
+		}
+	
 		auto handler_base::handle_error(const ::std::exception& p_ex)
 				-> bool
 		{
@@ -55,33 +64,6 @@ namespace cl
 			-> void
 		{
 			::std::rethrow_exception(::std::current_exception());
-		}
-		
-		auto handler_base::print_help() const
-			-> void
-		{
-			if(m_Data.m_HelpMode != internal::help_mode_::show_none)
-			{
-				// Print usage first
-				if(m_Data.m_HelpMode & internal::help_mode_::show_usage)
-					print_usage();
-				
-				if(m_Data.m_HelpMode & internal::help_mode_::show_summary)
-					print_summary();
-			}
-		}
-		
-		auto handler_base::print_usage() const
-			-> void
-		{
-			if(!m_Data.m_ApplicationUsage.empty())
-				std::cout << m_Data.m_ApplicationUsage << std::endl;
-		}
-		
-		auto handler_base::print_summary() const
-			-> void
-		{
-			
-		}
+		}		
 	}
 }

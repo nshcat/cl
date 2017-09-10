@@ -89,9 +89,16 @@ namespace cl
 					
 					if(has_command(t_name))
 					{					
-						const auto t_cmd = command(t_name);			
-						t_cmd->read(p_in);
-						m_GivenCommand = t_cmd->id();
+						try
+						{
+							const auto t_cmd = command(t_name);			
+							t_cmd->read(p_in);
+							m_GivenCommand = t_cmd->id();
+						}
+						catch(const ::std::exception& p_ex)
+						{
+							return this->handle_error(p_ex, t_cmd);
+						}
 					}
 					else
 					{

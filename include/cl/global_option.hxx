@@ -53,10 +53,17 @@ namespace cl
 	{
 		return { p_val };
 	}
+
+	constexpr static auto show_none = internal::help_mode_::show_none;
+	constexpr static auto show_usage = internal::help_mode_::show_usage;
+	constexpr static auto show_summary = internal::help_mode_::show_summary;
+	constexpr static auto show_all = show_usage | show_summary;
+	constexpr static auto on_error = internal::help_mode_::on_error;
 	
-	static auto application_usage(const ::std::string& p_val)
-		-> internal::global_value_option<::std::string, &internal::handler_data::m_ApplicationUsage>
+	
+	static auto help_mode(internal::help_mode_ p_val)
+		-> internal::global_value_option<internal::help_mode_, &internal::handler_data::m_HelpMode>
 	{
 		return { p_val };
-	}	
+	}
 }

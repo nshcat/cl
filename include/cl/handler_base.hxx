@@ -17,8 +17,10 @@
 #include <ut/throwf.hxx>
 #include <ut/always_false.hxx>
 
+#include "command_base.hxx"
 #include "tags.hxx"
-#include "option_base.hxx"
+#include "global_option.hxx"
+#include "local_option.hxx"
 #include "handler_data.hxx"
 #include "meta.hxx"
 
@@ -50,30 +52,23 @@ namespace cl
 				}
 				
 				template< typename T >
-				auto dispatch(option_tag_t, T&& p_arg)
+				auto dispatch(global_option_tag_t, T&& p_arg)
 					-> void
 				{
 					p_arg.apply(m_Data);
 				}
 				
 			protected:	/* Error handling */
+				// Handle help/usage display for given command, aswell as error mode
+				auto handle_error(const ::std::exception& p_ex, const command_base& p_cmd)
+					-> bool;
+					
+				// Only do error mode stuff. This is used when no command can be supplied, 
+				// e.g. when the user supplied a wrong command name
 				auto handle_error(const ::std::exception& p_ex)
 					-> bool;
 					
 				[[noreturn]] auto rethrow_error()
-					-> void;
-				
-			protected:	/* Help handling */
-				// Prints help according to help_mode
-				auto print_help() const
-					-> void;
-					
-				// Prints a summary of all registered arguments
-				auto print_summary() const
-					-> void;
-					
-				// Prints a usage string, if specified
-				auto print_usage() const
 					-> void;
 				
 			protected:

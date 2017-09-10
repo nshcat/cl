@@ -14,7 +14,7 @@ namespace cl
 		}
 		catch(const ::std::exception& p_ex)
 		{
-			return this->handle_error(p_ex);
+			return this->handle_error(p_ex, *this);
 		}	
 	}
 				

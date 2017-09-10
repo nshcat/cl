@@ -14,7 +14,7 @@ namespace cl
 		{
 		};
 		
-		template< typename TValue, TValue handler_data::* Ptr >
+		template< typename TValue, TValue command_data::* Ptr >
 		using local_value_option = value_option<
 			local_option_base,
 			command_data,
@@ -23,14 +23,8 @@ namespace cl
 		>;
 	}
 	
-	constexpr static auto show_none = internal::help_mode_::show_none;
-	constexpr static auto show_usage = internal::help_mode_::show_usage;
-	constexpr static auto show_summary = internal::help_mode_::show_summary;
-	constexpr static auto show_all = show_usage | show_summary;
-	
-	
-	static auto help_mode(internal::help_mode_ p_val)
-		-> internal::local_value_option<internal::help_mode_, &internal::command_data::m_HelpMode>
+	static auto usage(const ::std::string& p_val)
+		-> internal::local_value_option<::std::string, &internal::command_data::m_Usage>
 	{
 		return { p_val };
 	}
