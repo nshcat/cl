@@ -13,6 +13,9 @@
 #include <ut/array_view.hxx>
 #include <ut/string_view.hxx>
 
+#include "handler_data.hxx"
+#include "command_data.hxx"
+
 namespace cl
 {
 	namespace internal
@@ -160,6 +163,14 @@ namespace cl
 					return get(static_cast<::std::size_t>(p_id));
 				}
 				
+			public:
+				auto local_data() const
+					-> const command_data&;
+					
+			protected:
+				auto local_data()
+					-> command_data&;
+						
 			protected:
 				auto check_required() const
 					-> void;
@@ -167,6 +178,7 @@ namespace cl
 			protected:
 				argument_map_type m_ArgMap;
 				id_map_type m_IdMap;
+				command_data m_LocalData;
 		};
 	}
 }

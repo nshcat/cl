@@ -215,5 +215,17 @@ namespace cl
 			// Perform after-read tasks and checks
 			check_required();
 		}
+		
+		auto command_base::local_data() const
+			-> const command_data&
+		{
+			return m_LocalData;
+		}
+		
+		auto command_base::local_data()
+			-> command_data&
+		{
+			return m_LocalData;
+		}
 	}
 }
