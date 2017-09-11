@@ -66,4 +66,15 @@ namespace cl
 	{
 		return { p_val };
 	}
+	
+	
+	constexpr static auto spaces = internal::summary_style_::spaces;
+	constexpr static auto dots = internal::summary_style_::dots;
+	
+	static auto summary_style(internal::summary_style_ p_val)
+		-> internal::global_value_option<internal::summary_style_, &internal::handler_data::m_SummaryStyle>
+	{
+		return { p_val };
+	}
+	
 }

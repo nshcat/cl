@@ -30,5 +30,12 @@ namespace cl
 		
 		// The help_mode_ enumeration should be usable as a bitmask type.
 		LIBUT_MAKE_BITMASK(help_mode_)
+		
+		// Summary display style
+		enum class summary_style_
+		{
+			spaces,
+			dots			
+		};
 	}
 }

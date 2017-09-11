@@ -20,6 +20,7 @@ namespace cl
 			error_mode_ m_ErrorMode;
 			error_handler_ m_ErrorHandler;
 			help_mode_ m_HelpMode;
+			summary_style_ m_SummaryStyle{summary_style_::spaces};
 		};
 	}
 }
