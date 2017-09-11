@@ -17,10 +17,10 @@ namespace cl
 		{
 			::std::string m_ApplicationName;
 			::std::string m_ApplicationVersion;
-			error_mode_ m_ErrorMode;
+			error_mode_ m_ErrorMode{ error_mode_::terminate };
 			error_handler_ m_ErrorHandler;
-			help_mode_ m_HelpMode;
-			summary_style_ m_SummaryStyle{summary_style_::spaces};
+			help_mode_ m_HelpMode{ help_mode_::show_summary };
+			summary_style_ m_SummaryStyle{ summary_style_::spaces };
 		};
 	}
 }
