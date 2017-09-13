@@ -238,6 +238,12 @@ namespace cl
 			else throw ::std::runtime_error("Tried to access null global data ptr!");
 		}
 		
+		auto command_base::set_global_data(global_data_ptr p_ptr)
+			-> void
+		{
+			m_GlobalDataPtr = p_ptr;
+		}
+		
 		auto command_base::print_help() const
 			-> void
 		{
