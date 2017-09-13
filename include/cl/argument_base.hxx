@@ -174,6 +174,18 @@ namespace cl
 					m_ShortName = p_tag.value();
 					m_HasShortName = true;
 				}
+				
+				// Set description
+				void dispatch(const internal::description_t& p_tag)
+				{
+					m_Description = p_tag.value();
+				}
+		
+				// Set category
+				void dispatch(const internal::category_t& p_tag)
+				{
+					m_Category = p_tag.value();
+				}
 
 				// Set required.
 				void dispatch(internal::required_t)
