@@ -301,7 +301,18 @@ namespace cl
 			constexpr const auto t_LengthArgumentSpace = 30U;
 			constexpr const auto t_DescriptionLineLength = 47U;
 			
-			for(const auto& t_entry: p_cat)
+			// Copy it and sort it based on description availability
+			auto t_cat{p_cat};
+				
+			::std::sort(t_cat.begin(), t_cat.end(),
+				[](const auto& t_lhs, const auto& t_rhs) -> bool
+				{
+					return !(!t_lhs && t_rhs);
+				}
+			);
+			
+			
+			for(const auto& t_entry: t_cat)
 			{
 				// Ensure string stream is empty
 				t_ss.str(""s);
