@@ -313,11 +313,18 @@ namespace cl
 				t_ss << "--" << t_entry->long_name() << "] ";
 				//
 				
-				// -1 because the last space is set manually
-				::std::cout << '    ' << ::std::setfill(t_fillChar) << ::std::left << ::std::setw(t_LengthArgumentSpace-1) << t_ss.str() << ' ';
+				if(t_entry->has_description())
+				{
+					// -1 because the last space is set manually
+					::std::cout << "    " << ::std::setfill(t_fillChar) << ::std::left << ::std::setw(t_LengthArgumentSpace-1) << t_ss.str() << ' ';
 				
-				// TODO: real line breaks, aka ones that do not divide words
-				::std::cout << insert_line_breaks((t_entry->has_description() ? t_entry->description() : ""s), 47, t_LengthArgumentSpace) << ::std::endl;
+					// TODO: real line breaks, aka ones that do not divide words
+					::std::cout << insert_line_breaks(t_entry->description(), 47, t_LengthArgumentSpace) << ::std::endl;
+				}
+				else
+				{
+					::std::cout << "    " << t_ss.str() << ::std::endl;
+				}	
 			}
 			
 			::std::cout << ::std::endl;
