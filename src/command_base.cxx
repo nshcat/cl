@@ -309,7 +309,7 @@ namespace cl
 				t_ss << '[';
 				
 				if(t_entry->has_short_name())
-					t_ss << '-' << t_entry->short_name() << ',';
+					t_ss << '-' << t_entry->short_name() << ", ";
 					
 				t_ss << "--" << t_entry->long_name() << "] ";
 				//
