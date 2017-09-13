@@ -307,7 +307,7 @@ namespace cl
 			::std::sort(t_cat.begin(), t_cat.end(),
 				[](const auto& t_lhs, const auto& t_rhs) -> bool
 				{
-					return !(!t_lhs && t_rhs);
+					return !(!t_lhs->has_description() && t_rhs->has_description());
 				}
 			);
 			
