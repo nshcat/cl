@@ -297,7 +297,8 @@ namespace cl
 			// Character used to fill empty space
 			const auto t_fillChar = (global_data().m_SummaryStyle == summary_style_::dots ? '.' : ' ');
 			
-			constexpr const auto t_LengthArgumentSpace = 22U;
+			// TODO determine length based on longest argument
+			constexpr const auto t_LengthArgumentSpace = 30U;
 			constexpr const auto t_DescriptionLineLength = 47U;
 			
 			for(const auto& t_entry: p_cat)
@@ -320,7 +321,7 @@ namespace cl
 					::std::cout << "    " << ::std::setfill(t_fillChar) << ::std::left << ::std::setw(t_LengthArgumentSpace-1) << t_ss.str() << ' ';
 				
 					// TODO: real line breaks, aka ones that do not divide words
-					::std::cout << insert_line_breaks(t_entry->description(), t_DescriptionLineLength, t_LengthArgumentSpace) << ::std::endl;
+					::std::cout << insert_line_breaks(t_entry->description(), t_DescriptionLineLength, t_LengthArgumentSpace+4) << ::std::endl;
 				}
 				else
 				{
