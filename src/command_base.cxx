@@ -8,11 +8,13 @@
 #include <map>
 #include <ut/throwf.hxx>
 
+#include "utility.hxx"
 #include "command.hxx"
 #include "grammar.hxx"
 #include "parser_action.hxx"
 #include "parser_state.hxx"
 
+using namespace std::literals;
 
 namespace cl
 {
@@ -257,10 +259,77 @@ namespace cl
 				std::cout << m_LocalData.m_Usage << std::endl;
 		}
 		
+		
+		
 		auto command_base::print_summary() const
 			-> void
 		{
+			// Retrieve arguments sorted by category
+			const auto t_categories = sort_arguments();
 			
+			// Handle "general" category first
+			const auto t_it = t_categories.find("General"s);
+			
+			if(t_it != t_categories.end())
+				print_category("General"s, t_it->second);
+			
+			// Handle rest
+			for(const auto& t_kvp: t_categories)
+			{
+				if(t_kvp.first != "General")
+					print_category(t_kvp.first, t_kvp.second);
+			}
+		}
+		
+		auto command_base::print_category(const ::std::string& p_name, const ::std::vector<argument_view>& p_cat) const
+			-> void
+		{
+			::std::cout << p_name << ":" << ::std::endl;
+			
+			::std::ostringstream t_ss{ };
+			
+			// Character used to fill empty space
+			const auto t_fillChar = (global_data().m_SummaryStyle == summary_style_::dots ? '.' : ' ');
+			
+			constexpr const auto t_LengthArgumentSpace = 22;
+			
+			for(const auto& t_entry: p_cat)
+			{
+				// Ensure string stream is empty
+				t_ss.str(""s);
+			
+				// Build string containing long and (possibly) short name
+				t_ss << '[';
+				
+				if(t_entry->has_short_name())
+					t_ss << '-' << t_entry->short_name() << ',';
+					
+				t_ss << "--" << t_entry->long_name() << "] ";
+				//
+				
+				// -1 because the last space is set manually
+				::std::cout << '    ' << ::std::setfill(t_fillChar) << ::std::left << ::std::setw(t_LengthArgumentSpace-1) << t_ss.str() << ' ';
+				
+				// TODO: real line breaks, aka ones that do not divide words
+				::std::cout << insert_line_breaks((t_entry->has_description() ? t_entry->description() : ""s), 47, t_LengthArgumentSpace) << ::std::endl;
+			}
+			
+			::std::cout << ::std::endl;
+		}
+		
+		auto command_base::sort_arguments() const
+			-> category_map_type
+		{
+			category_map_type t_categories{ };
+			
+			for(const auto& t_kvp: m_ArgMap)
+			{
+				const auto& t_ptr = t_kvp.second;
+			
+				t_categories[(t_ptr->has_category() ? t_ptr->category() : "General"s)].push_back({t_ptr.get()});				
+			}	
+		
+			return t_categories;
 		}
 	}
 }

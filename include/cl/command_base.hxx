@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <map>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 #include <ut/observer_ptr.hxx>
 #include <ut/array_view.hxx>
@@ -31,6 +33,7 @@ namespace cl
 			using argument_map_type = ::std::map<std::string, argument_ptr>;
 			using id_map_type = ::std::map<size_t, argument_view>;
 			using this_type = command_base;
+			using category_map_type = ::std::unordered_map<::std::string, ::std::vector<argument_view>>;
 			
 
 			public:
@@ -189,6 +192,13 @@ namespace cl
 				auto global_data() const
 					-> const handler_data&;
 					
+			protected:
+				auto sort_arguments() const
+					-> category_map_type;
+				
+				auto print_category(const ::std::string& p_name, const ::std::vector<argument_view>& p_cat) const
+					-> void;
+				
 			protected:
 				auto local_data()
 					-> command_data&;
