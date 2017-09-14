@@ -1,5 +1,6 @@
 #pragma once
 
+#include "tags.hxx"
 #include "flag_argument.hxx"
 
 namespace cl
@@ -13,7 +14,11 @@ namespace cl
 		public:
 			template< typename... Ttags >
 			help_argument(Ttags&&... p_tags)
-				: Tbase{ ::std::forward<Ttags>(p_tags)... }
+				: 	Tbase{	cl::description("Display this help text"),
+							cl::long_name("help"),
+							cl::short_name('h'),
+							::std::forward<Ttags>(p_tags)... 
+					}
 			{
 			}
 	};
