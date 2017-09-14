@@ -15,7 +15,6 @@ namespace cl
 			flag_argument(Ttags&&... p_tags)
 				: Tbase{ ::std::forward<Ttags>(p_tags)... }
 			{
-				//this->template dispatch_all<Tthis>(::std::forward<Ttags>(p_tags)...);
 				this->m_SwValue = true;
 			}
 	};
