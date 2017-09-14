@@ -100,7 +100,7 @@ namespace cl
 			{
 				if (!p_state.values().empty())
 				{
-					// Try to add values to free_arguments. TODO solve without try catch
+					/*// Try to add values to free_arguments. TODO solve without try catch
 					try
 					{
 						p_hndlr.get("")->read(p_state.values(), false);
@@ -108,7 +108,10 @@ namespace cl
 					catch (...)
 					{
 						// If no free_arguments was added, just ignore the values
-					}
+					}*/
+					// The use might not have supplied a handler for free arguments
+					if(p_hndlr.has(""))
+						p_hndlr.get("")->read(p_state.values(), false);
 				}
 
 				// Clean up state for next match

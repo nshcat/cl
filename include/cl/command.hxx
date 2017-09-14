@@ -21,7 +21,8 @@
 #include "command_base.hxx"
 #include "enum_argument.hxx"
 #include "handler_data.hxx"
-#include "options.hxx"
+#include "local_option.hxx"
+#include "global_option.hxx"
 #include "meta.hxx"
 
 namespace cl
@@ -91,14 +92,22 @@ namespace cl
 				this->add(::std::make_unique<std::decay_t<T>>(::std::forward<T>(p_arg)));
 			}
 				
-			// Option tag: ignore.
+			// Global option tag: ignore.
 			template< typename T >
-			auto dispatch(internal::option_tag_t, T&& p_arg)
+			auto dispatch(internal::global_option_tag_t, T&& p_arg)
 				-> void
 			{
 				// At this point, all option tags are in a moved-from state and must not be accessed.
 				// We sink them here. This weird design is needed to greatly simplify the design of the non-multi handler:
 				// It does not have to actually remove the already dispatched option tags from the command constructor call.
+			}
+					
+			// Local option tag: apply
+			template< typename T >
+			auto dispatch(internal::local_option_tag_t, T&& p_arg)
+				-> void
+			{
+				p_arg.apply(local_data());
 			}
 			
 			// Matching key-value tag: Set name and id.

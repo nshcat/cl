@@ -5,14 +5,18 @@
 #include <stdexcept>
 #include <algorithm>
 #include <sstream>
+#include <cstdlib>
 #include <map>
 #include <ut/throwf.hxx>
 
+#include "utility.hxx"
 #include "command.hxx"
 #include "grammar.hxx"
 #include "parser_action.hxx"
 #include "parser_state.hxx"
+#include "help_argument.hxx"
 
+using namespace std::literals;
 
 namespace cl
 {
@@ -193,6 +197,25 @@ namespace cl
 			return get(p_id)->supplied();
 		}
 		
+		auto command_base::check_help() const
+			-> void
+		{
+			// Try to find a help_argument that was supplied
+			const auto t_it = ::std::find_if(m_ArgMap.begin(), m_ArgMap.end(),
+				[](const auto& t_elem) -> bool
+				{
+					return t_elem.second->template is<help_argument>() &&
+						t_elem.second->supplied();
+				}
+			);
+			
+			// Display help if requested
+			if(t_it != m_ArgMap.end())
+			{
+				print_help();
+				::std::exit(EXIT_SUCCESS);
+			}
+		}
 		
 		auto command_base::read(input_type p_cl)
 			-> void
@@ -212,8 +235,163 @@ namespace cl
 			for (auto& arg : m_ArgMap)
 				arg.second->read_end();
 
+			// Check if help display was requested
+			check_help();
+
 			// Perform after-read tasks and checks
 			check_required();
+		}
+		
+		auto command_base::local_data() const
+			-> const command_data&
+		{
+			return m_LocalData;
+		}
+		
+		auto command_base::local_data()
+			-> command_data&
+		{
+			return m_LocalData;
+		}
+		
+		auto command_base::global_data() const
+			-> const handler_data&
+		{
+			if(m_GlobalDataPtr)
+				return *m_GlobalDataPtr;
+			else throw ::std::runtime_error("Tried to access null global data ptr!");
+		}
+		
+		auto command_base::set_global_data(global_data_ptr p_ptr)
+			-> void
+		{
+			m_GlobalDataPtr = p_ptr;
+		}
+		
+		auto command_base::print_help() const
+			-> void
+		{
+			if(global_data().m_HelpMode != internal::help_mode_::show_none)
+			{
+				// Print usage first
+				if(global_data().m_HelpMode & internal::help_mode_::show_usage)
+					print_usage();
+				
+				if(global_data().m_HelpMode & internal::help_mode_::show_summary)
+					print_summary();
+			}
+		}
+		
+		auto command_base::print_usage() const
+			-> void
+		{
+			if(!m_LocalData.m_Usage.empty())
+				std::cout << m_LocalData.m_Usage << std::endl;
+		}
+		
+		
+		
+		auto command_base::print_summary() const
+			-> void
+		{
+			// Print preamble
+			::std::cout << "\nAllowed arguments:\n" << ::std::endl;
+		
+			// Retrieve arguments sorted by category
+			const auto t_categories = sort_arguments();
+			
+			// Handle "general" category first
+			const auto t_it = t_categories.find("General"s);
+			
+			if(t_it != t_categories.end())
+				print_category("General"s, t_it->second);
+			
+			// Handle rest
+			for(const auto& t_kvp: t_categories)
+			{
+				if(t_kvp.first != "General")
+					print_category(t_kvp.first, t_kvp.second);
+			}
+		}
+		
+		auto command_base::print_category(const ::std::string& p_name, const ::std::vector<argument_view>& p_cat) const
+			-> void
+		{
+			::std::cout << ' ' << p_name << ":" << ::std::endl;
+			
+			::std::ostringstream t_ss{ };
+			
+			// Character used to fill empty space is dependent on the global summary style
+			// setting
+			const auto t_fillChar = (global_data().m_SummaryStyle == summary_style_::dots ? '.' : ' ');
+			
+			// Length of the part that displays the long and possibly short name
+			// of the argument
+			const auto t_LengthArgumentSpace = global_data().m_SummaryLabelWidth;
+			
+			// Maximum line length of the argument description.
+			// If the description is longer than this, line breaks will be
+			// inserted.
+			const auto t_DescriptionLineLength = global_data().m_SummaryDescWidth;
+			
+			// Copy it and sort it based on description availability
+			auto t_cat{p_cat};
+				
+			::std::sort(t_cat.begin(), t_cat.end(),
+				[](const auto& t_lhs, const auto& t_rhs) -> bool
+				{
+					return !(!t_lhs->has_description() && t_rhs->has_description());
+				}
+			);	
+			
+			for(const auto& t_entry: t_cat)
+			{
+				// Ensure string stream is empty
+				t_ss.str(""s);
+			
+				// Build string containing long and (possibly) short name
+				t_ss << '[';
+				
+				if(t_entry->has_short_name())
+					t_ss << '-' << t_entry->short_name() << ", ";
+					
+				t_ss << "--" << t_entry->long_name() << "] ";
+				//
+				
+				// If the current argument has a description associated with it,
+				// we have to fill the remaining horizontal space with the appropiate
+				// fill character. If not, the current line ends here.
+				if(t_entry->has_description())
+				{
+					// Since the last space is written manually (to support dotted fill characters that still end with one space),
+					// we use `t_LengthArgumentSpace-1` here.
+					::std::cout << "  " << ::std::setfill(t_fillChar) << ::std::left << ::std::setw(t_LengthArgumentSpace-1) << t_ss.str() << ' ';
+				
+					// TODO: real line breaks, aka ones that do not divide words
+					::std::cout << insert_line_breaks(t_entry->description(), t_DescriptionLineLength, t_LengthArgumentSpace+2) << ::std::endl;
+				}
+				else
+				{
+					::std::cout << "  " << t_ss.str() << ::std::endl;
+				}	
+			}
+			
+			::std::cout << ::std::endl;
+		}
+		
+		auto command_base::sort_arguments() const
+			-> category_map_type
+		{
+			category_map_type t_categories{ };
+			
+			for(const auto& t_kvp: m_ArgMap)
+			{
+				const auto& t_ptr = t_kvp.second;
+			
+				t_categories[(t_ptr->has_category() ? t_ptr->category() : "General"s)].push_back({t_ptr.get()});				
+			}	
+		
+			return t_categories;
 		}
 	}
 }

@@ -52,7 +52,15 @@ namespace cl
 
 			public:
 				virtual void read(std::list<std::string>&, bool) = 0;
-				virtual void read_end() = 0;
+				
+				// TODO create pure virtual function read_end_impl(), and let child classes
+				// implement that, while read_end() is a normal method that always does the supplied
+				// reference update
+				virtual void read_end()
+				{
+					if(m_HasSuppliedRef)
+						*m_SuppliedRef = supplied();
+				}
 
 				virtual bool is_switch()
 				{
@@ -128,6 +136,50 @@ namespace cl
 						throw std::runtime_error("Mismatching type!");
 					else return t_arg;
 				}
+				
+				template< typename T >
+				const T* as() const
+				{
+					static_assert(std::is_base_of<argument_base, T>::value,
+						"T needs to be an argument type!");
+
+					auto t_arg = dynamic_cast<const T*>(this);
+
+					if (t_arg == nullptr)
+						throw std::runtime_error("Mismatching type!");
+					else return t_arg;
+				}
+				
+				/*template< typename T >
+				T& as() &
+				{
+					static_assert(std::is_base_of<argument_base, T>::value,
+						"T needs to be an argument type!");
+				}
+				
+				template< typename T >
+				const T& as() &
+				{
+					static_assert(std::is_base_of<argument_base, T>::value,
+						"T needs to be an argument type!");
+				}*/
+				
+				/*template< typename T >
+				T&& as() &&
+				{
+					static_assert(std::is_base_of<argument_base, T>::value,
+						"T needs to be an argument type!");
+				}*/
+				
+				template< typename T >
+				bool is() const
+				{
+					static_assert(std::is_base_of<argument_base, T>::value,
+						"T needs to be an argument type!");
+						
+					return (dynamic_cast<const T*>(this) != nullptr);
+				}
+				
 
 				// All dispatch overloads in this and all derived argument classes need to
 				// be public since they need to be accessible within
@@ -174,11 +226,31 @@ namespace cl
 					m_ShortName = p_tag.value();
 					m_HasShortName = true;
 				}
+				
+				// Set description
+				void dispatch(const internal::description_t& p_tag)
+				{
+					m_Description = p_tag.value();
+				}
+		
+				// Set category
+				void dispatch(const internal::category_t& p_tag)
+				{
+					m_Category = p_tag.value();
+				}
 
 				// Set required.
 				void dispatch(internal::required_t)
 				{
 					m_Required = true;
+				}
+				
+				// Set reference to flag that gets set when this argument
+				// is supplied.
+				void dispatch(const internal::supplied_t& p_tag)
+				{
+					m_HasSuppliedRef = true;
+					m_SuppliedRef = p_tag.value();
 				}
 
 				// Set optional.
@@ -208,6 +280,9 @@ namespace cl
 
 				bool			m_HasId{false};
 				::std::size_t	m_Id{};
+				
+				bool			m_HasSuppliedRef{false};
+				bool*			m_SuppliedRef{nullptr};
 		};
 	}
 }

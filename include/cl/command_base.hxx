@@ -8,10 +8,16 @@
 #include <algorithm>
 #include <map>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 #include <ut/observer_ptr.hxx>
 #include <ut/array_view.hxx>
 #include <ut/string_view.hxx>
+
+#include "argument_base.hxx"
+#include "handler_data.hxx"
+#include "command_data.hxx"
 
 namespace cl
 {
@@ -20,12 +26,14 @@ namespace cl
 		class command_base
 		{
 			using argument_ptr = ::std::unique_ptr<internal::argument_base>;
+			using global_data_ptr = ut::observer_ptr<const handler_data>;
 			using argument_view = ut::observer_ptr<internal::argument_base>;
 			using const_argument_view = ut::observer_ptr<const internal::argument_base>;
 			using input_type = ut::array_view<const char*>;
 			using argument_map_type = ::std::map<std::string, argument_ptr>;
 			using id_map_type = ::std::map<size_t, argument_view>;
 			using this_type = command_base;
+			using category_map_type = ::std::unordered_map<::std::string, ::std::vector<argument_view>>;
 			
 
 			public:
@@ -160,13 +168,53 @@ namespace cl
 					return get(static_cast<::std::size_t>(p_id));
 				}
 				
+			public:
+				// Prints help according to help_mode
+				auto print_help() const
+					-> void;
+					
+				// Prints a summary of all registered arguments
+				auto print_summary() const
+					-> void;
+					
+				// Prints a usage string, if specified
+				auto print_usage() const
+					-> void;
+					
+			public:
+				auto set_global_data(global_data_ptr p_ptr)
+					-> void;
+				
+			public:
+				auto local_data() const
+					-> const command_data&;
+					
+				auto global_data() const
+					-> const handler_data&;
+					
+			protected:
+				auto sort_arguments() const
+					-> category_map_type;
+				
+				auto print_category(const ::std::string& p_name, const ::std::vector<argument_view>& p_cat) const
+					-> void;
+				
+			protected:
+				auto local_data()
+					-> command_data&;
+						
 			protected:
 				auto check_required() const
 					-> void;
+					
+				auto check_help() const
+					-> void;
 			
 			protected:
+				global_data_ptr m_GlobalDataPtr;
 				argument_map_type m_ArgMap;
 				id_map_type m_IdMap;
+				command_data m_LocalData;
 		};
 	}
 }

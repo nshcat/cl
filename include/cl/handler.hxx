@@ -41,10 +41,12 @@ namespace cl
 			handler(Ts&&... p_args)
 				: command_type(::std::forward<Ts>(p_args)...)
 			{
-				// It is ok to access option tags here despite being forwarded beforehand,
-				// because cl::command will ignore all option tags completely.
+				// It is ok to access global option tags here despite being forwarded beforehand,
+				// because cl::command will ignore all global option tags completely.
 				const auto x = { (this->base_type::dispatch(::std::forward<Ts>(p_args)), 0)... };
 				(void)x;
+				
+				this->set_global_data({&this->m_Data});
 			}
 			
 			handler() = delete;
@@ -60,8 +62,5 @@ namespace cl
 				
 			auto read(int p_argc, const char** p_argv)
 				-> bool;
-			
-		private:
-			//command_type m_Cmd;
 	};
 }

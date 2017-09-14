@@ -117,6 +117,8 @@ namespace cl
 					// Refresh references only if argument was given
 					if(this->supplied())
 						refresh_references();
+						
+					this->argument_base::read_end();
 				}
 				
 				virtual void read(::std::list<::std::string>& p_args, bool) override

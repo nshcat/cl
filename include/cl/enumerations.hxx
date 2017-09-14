@@ -24,10 +24,18 @@ namespace cl
 		{
 			show_none 		= 0x0,	/* Don't do anything. This is the default value. */
 			show_usage 		= 0x1,	/* Show a general usage string that can be set by cl::usage. */
-			show_summary 	= 0x2	/* Show a summary of all registered options. */
+			show_summary 	= 0x2,	/* Show a summary of all registered options. */
+			on_error		= 0x4,	/* Show help on error. */
 		};
 		
 		// The help_mode_ enumeration should be usable as a bitmask type.
 		LIBUT_MAKE_BITMASK(help_mode_)
+		
+		// Summary display style
+		enum class summary_style_
+		{
+			spaces,
+			dots			
+		};
 	}
 }
