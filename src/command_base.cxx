@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <sstream>
+#include <cstdlib>
 #include <map>
 #include <ut/throwf.hxx>
 
@@ -13,6 +14,7 @@
 #include "grammar.hxx"
 #include "parser_action.hxx"
 #include "parser_state.hxx"
+#include "help_argument.hxx"
 
 using namespace std::literals;
 
@@ -195,6 +197,25 @@ namespace cl
 			return get(p_id)->supplied();
 		}
 		
+		auto command_base::check_help() const
+			-> void
+		{
+			// Try to find a help_argument that was supplied
+			const auto t_it = ::std::find_if(m_ArgMap.begin(), m_ArgMap.end(),
+				[](const auto& t_elem) -> bool
+				{
+					return t_elem.second->template is<help_argument>() &&
+						t_elem.second->supplied();
+				}
+			);
+			
+			// Display help if requested
+			if(t_it != m_ArgMap.end())
+			{
+				print_help();
+				::std::exit(EXIT_SUCCESS);
+			}
+		}
 		
 		auto command_base::read(input_type p_cl)
 			-> void
@@ -213,6 +234,9 @@ namespace cl
 			// Call read_end on all arguments to refresh references etc
 			for (auto& arg : m_ArgMap)
 				arg.second->read_end();
+
+			// Check if help display was requested
+			check_help();
 
 			// Perform after-read tasks and checks
 			check_required();

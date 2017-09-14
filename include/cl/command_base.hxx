@@ -206,6 +206,9 @@ namespace cl
 			protected:
 				auto check_required() const
 					-> void;
+					
+				auto check_help() const
+					-> void;
 			
 			protected:
 				global_data_ptr m_GlobalDataPtr;
