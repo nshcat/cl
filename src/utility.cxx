@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include <utility.hxx>
 
 namespace cl
@@ -7,20 +9,30 @@ namespace cl
 		auto insert_line_breaks(const ::std::string& p_in, ::std::string::size_type p_lineLength, ::std::string::size_type p_offset)
 			-> ::std::string
 		{
-			::std::string t_result{ };
-			t_result.reserve(p_in.size() + (p_in.size() / p_lineLength) * (p_offset+1));
+			::std::istringstream t_words{p_in};
+			::std::ostringstream t_wrapped{ };
+			::std::string t_word{ };
 			
-			for(::std::string::size_type t_ix = 0; t_ix < p_in.size(); ++t_ix)
+			if(t_words >> t_word)
 			{
-				if(!(t_ix % p_lineLength) && t_ix && (t_ix != p_in.size()-1))
+				t_wrapped << t_word;
+				::std::size_t t_spaceLeft = p_lineLength - t_word.length();
+				while(t_words >> t_word)
 				{
-					t_result.push_back('\n');
-					t_result.append(p_offset, ' ');
+					if(t_spaceLeft < t_word.length() + 1)
+					{
+						t_wrapped << '\n' << ::std::string(p_offset, ' ') << t_word;
+						t_spaceLeft = p_lineLength - t_word.length();
+					}
+					else
+					{
+						t_wrapped << ' ' << t_word;
+						t_spaceLeft -= t_word.length() + 1;
+					}
 				}
-				t_result.push_back(p_in[t_ix]);
 			}
 			
-			return t_result;
+			return t_wrapped.str();
 		}
 	}
 }
