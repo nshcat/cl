@@ -21,8 +21,8 @@ namespace cl
 			error_handler_ m_ErrorHandler;
 			help_mode_ m_HelpMode{ help_mode_::show_summary };
 			summary_style_ m_SummaryStyle{ summary_style_::dots };
-			::std::size_t m_SummaryDescWidth{ 28U };
-			::std::size_t m_SummaryLabelWidth{ 60U };	
+			::std::size_t m_SummaryDescWidth{ 60U };
+			::std::size_t m_SummaryLabelWidth{ 28U };	
 		};
 	}
 }
