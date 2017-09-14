@@ -300,12 +300,12 @@ namespace cl
 			
 			// Length of the part that displays the long and possibly short name
 			// of the argument
-			constexpr const auto t_LengthArgumentSpace = 30U;
+			constexpr const auto t_LengthArgumentSpace = global_data().m_SummaryLabelWidth;
 			
 			// Maximum line length of the argument description.
 			// If the description is longer than this, line breaks will be
 			// inserted.
-			constexpr const auto t_DescriptionLineLength = 47U;
+			constexpr const auto t_DescriptionLineLength = global_data().m_SummaryDescWidth;
 			
 			// Copy it and sort it based on description availability
 			auto t_cat{p_cat};

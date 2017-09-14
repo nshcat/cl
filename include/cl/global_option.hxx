@@ -77,4 +77,16 @@ namespace cl
 		return { p_val };
 	}
 	
+	
+	static auto summary_label_width(::std::size_t p_val)
+		-> internal::global_value_option<::std::size_t, &internal::handler_data::m_SummaryLabelWidth>
+	{
+		return { p_val };
+	}
+	
+	static auto summary_description_width(::std::size_t p_val)
+		-> internal::global_value_option<::std::size_t, &internal::handler_data::m_SummaryDescWidth>
+	{
+		return { p_val };
+	}
 }
