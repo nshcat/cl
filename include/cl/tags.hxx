@@ -125,6 +125,8 @@ namespace cl
 		
 		template< typename T >
 		using reference_t = unary_tag_t<T*, struct _reference>;
+		
+		using supplied_t = unary_tag_t<bool*, struct _supplied>;
 
 		template< typename T >
 		using view_t = unary_tag_t<::ut::array_view<T>, struct _view>;
@@ -159,6 +161,11 @@ namespace cl
 	static internal::reference_t<T> reference(T& p_val)
 	{
 		return internal::reference_t<T>(::std::addressof(p_val));
+	}
+	
+	static internal::supplied_t supplied(bool& p_val)
+	{
+		return internal::supplied_t(::std::addressof(p_val));
 	}
 	
 	template< typename T > /* TODO maybe rename to "reference_view" or "view" if this doesnt work */

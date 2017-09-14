@@ -44,6 +44,8 @@ namespace cl
 					// supplied or we have a default value
 					if(this->supplied() || has_default())
 						refresh_references();
+						
+					this->argument_base::read_end();
 				}
 
 			public:

@@ -52,7 +52,15 @@ namespace cl
 
 			public:
 				virtual void read(std::list<std::string>&, bool) = 0;
-				virtual void read_end() = 0;
+				
+				// TODO create pure virtual function read_end_impl(), and let child classes
+				// implement that, while read_end() is a normal method that always does the supplied
+				// reference update
+				virtual void read_end()
+				{
+					if(m_HasSuppliedRef)
+						*m_SuppliedRef = supplied();
+				}
 
 				virtual bool is_switch()
 				{
@@ -236,6 +244,14 @@ namespace cl
 				{
 					m_Required = true;
 				}
+				
+				// Set reference to flag that gets set when this argument
+				// is supplied.
+				void dispatch(const internal::supplied_t& p_tag)
+				{
+					m_HasSuppliedRef = true;
+					m_SuppliedRef = p_tag.value();
+				}
 
 				// Set optional.
 				void dispatch(internal::optional_t)
@@ -264,6 +280,9 @@ namespace cl
 
 				bool			m_HasId{false};
 				::std::size_t	m_Id{};
+				
+				bool			m_HasSuppliedRef{false};
+				bool*			m_SuppliedRef{nullptr};
 		};
 	}
 }
