@@ -128,6 +128,50 @@ namespace cl
 						throw std::runtime_error("Mismatching type!");
 					else return t_arg;
 				}
+				
+				template< typename T >
+				const T* as() const
+				{
+					static_assert(std::is_base_of<argument_base, T>::value,
+						"T needs to be an argument type!");
+
+					auto t_arg = dynamic_cast<const T*>(this);
+
+					if (t_arg == nullptr)
+						throw std::runtime_error("Mismatching type!");
+					else return t_arg;
+				}
+				
+				/*template< typename T >
+				T& as() &
+				{
+					static_assert(std::is_base_of<argument_base, T>::value,
+						"T needs to be an argument type!");
+				}
+				
+				template< typename T >
+				const T& as() &
+				{
+					static_assert(std::is_base_of<argument_base, T>::value,
+						"T needs to be an argument type!");
+				}*/
+				
+				/*template< typename T >
+				T&& as() &&
+				{
+					static_assert(std::is_base_of<argument_base, T>::value,
+						"T needs to be an argument type!");
+				}*/
+				
+				template< typename T >
+				bool is() const
+				{
+					static_assert(std::is_base_of<argument_base, T>::value,
+						"T needs to be an argument type!");
+						
+					return (dynamic_cast<const T*>(this) != nullptr);
+				}
+				
 
 				// All dispatch overloads in this and all derived argument classes need to
 				// be public since they need to be accessible within
