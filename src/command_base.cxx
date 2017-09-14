@@ -270,6 +270,9 @@ namespace cl
 		auto command_base::print_summary() const
 			-> void
 		{
+			// Print preamble
+			::std::cout << "\nAllowed arguments:\n" << ::std::endl;
+		
 			// Retrieve arguments sorted by category
 			const auto t_categories = sort_arguments();
 			
@@ -290,7 +293,7 @@ namespace cl
 		auto command_base::print_category(const ::std::string& p_name, const ::std::vector<argument_view>& p_cat) const
 			-> void
 		{
-			::std::cout << p_name /*<< ":"*/ << ::std::endl;
+			::std::cout << ' ' << p_name << ":" << ::std::endl;
 			
 			::std::ostringstream t_ss{ };
 			
@@ -338,14 +341,14 @@ namespace cl
 				{
 					// Since the last space is written manually (to support dotted fill characters that still end with one space),
 					// we use `t_LengthArgumentSpace-1` here.
-					::std::cout << "    " << ::std::setfill(t_fillChar) << ::std::left << ::std::setw(t_LengthArgumentSpace-1) << t_ss.str() << ' ';
+					::std::cout << "  " << ::std::setfill(t_fillChar) << ::std::left << ::std::setw(t_LengthArgumentSpace-1) << t_ss.str() << ' ';
 				
 					// TODO: real line breaks, aka ones that do not divide words
-					::std::cout << insert_line_breaks(t_entry->description(), t_DescriptionLineLength, t_LengthArgumentSpace+4) << ::std::endl;
+					::std::cout << insert_line_breaks(t_entry->description(), t_DescriptionLineLength, t_LengthArgumentSpace+2) << ::std::endl;
 				}
 				else
 				{
-					::std::cout << "    " << t_ss.str() << ::std::endl;
+					::std::cout << "  " << t_ss.str() << ::std::endl;
 				}	
 			}
 			
