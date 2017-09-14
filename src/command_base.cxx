@@ -290,15 +290,21 @@ namespace cl
 		auto command_base::print_category(const ::std::string& p_name, const ::std::vector<argument_view>& p_cat) const
 			-> void
 		{
-			::std::cout << p_name << ":" << ::std::endl;
+			::std::cout << p_name /*<< ":"*/ << ::std::endl;
 			
 			::std::ostringstream t_ss{ };
 			
-			// Character used to fill empty space
+			// Character used to fill empty space is dependent on the global summary style
+			// setting
 			const auto t_fillChar = (global_data().m_SummaryStyle == summary_style_::dots ? '.' : ' ');
 			
-			// TODO determine length based on longest argument
+			// Length of the part that displays the long and possibly short name
+			// of the argument
 			constexpr const auto t_LengthArgumentSpace = 30U;
+			
+			// Maximum line length of the argument description.
+			// If the description is longer than this, line breaks will be
+			// inserted.
 			constexpr const auto t_DescriptionLineLength = 47U;
 			
 			// Copy it and sort it based on description availability
@@ -309,8 +315,7 @@ namespace cl
 				{
 					return !(!t_lhs->has_description() && t_rhs->has_description());
 				}
-			);
-			
+			);	
 			
 			for(const auto& t_entry: t_cat)
 			{
@@ -326,9 +331,13 @@ namespace cl
 				t_ss << "--" << t_entry->long_name() << "] ";
 				//
 				
+				// If the current argument has a description associated with it,
+				// we have to fill the remaining horizontal space with the appropiate
+				// fill character. If not, the current line ends here.
 				if(t_entry->has_description())
 				{
-					// -1 because the last space is set manually
+					// Since the last space is written manually (to support dotted fill characters that still end with one space),
+					// we use `t_LengthArgumentSpace-1` here.
 					::std::cout << "    " << ::std::setfill(t_fillChar) << ::std::left << ::std::setw(t_LengthArgumentSpace-1) << t_ss.str() << ' ';
 				
 					// TODO: real line breaks, aka ones that do not divide words
