@@ -100,7 +100,7 @@ namespace cl
 				diagnostics_state& operator=(diagnostics_state&&) = default;
 				
 			public:
-				auto reset()
+				auto cleanup()
 					-> void
 				{
 					m_ArgumentRange.reset();
