@@ -8,6 +8,7 @@
 #include <ut/always_false.hxx>
 
 #include "tags.hxx"
+#include "diagnostics_state.hxx"
 
 
 namespace cl
@@ -68,6 +69,17 @@ namespace cl
 				}
 
 			public:
+				void set_diag_state(const diagnostics_state& p_state)
+				{
+					m_DiagState = p_state;
+				}
+				
+				const diagnostics_state& diag_state() const
+				{
+					return m_DiagState;
+				}
+
+			public:		
 				bool supplied() const
 				{
 					return m_Supplied;
@@ -283,6 +295,8 @@ namespace cl
 				
 				bool			m_HasSuppliedRef{false};
 				bool*			m_SuppliedRef{nullptr};
+				
+				diagnostics_state m_DiagState{ };
 		};
 	}
 }

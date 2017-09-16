@@ -13,6 +13,7 @@
 #include "command.hxx"
 #include "grammar.hxx"
 #include "parser_action.hxx"
+#include "diagnostics_state.hxx"
 #include "parser_state.hxx"
 #include "help_argument.hxx"
 
@@ -227,9 +228,25 @@ namespace cl
 				ss << std::quoted(t_entry) << ' ';
 			}
 
-			internal::parser_state state{};
+			::std::string t_source{ ss.str() };
+			
+			// Transform all tab characters to single spaces to make diagnostics work
+			// (tab characters count as one character in the column counter, but are
+			// displayed as more than one. This screws up the diagnostics output
+			// when underlines and carets are used)
+			::std::transform(t_source.begin(), t_source.end(), t_source.begin(),
+				[](const char c) -> char
+				{
+					if(c == '\t')
+						return ' ';
+					else return c;
+				}
+			);
+			
+			internal::parser_state t_parserState{};
+			internal::diagnostics_state t_diagState{t_source};
 
-			pegtl::parse<internal::R_Commandline, internal::parser_action>(ss.str(), "", *this, state);
+			pegtl::parse<internal::R_Commandline, internal::parser_action>(t_source, "", *this, t_parserState, t_diagState);
 
 			// Call read_end on all arguments to refresh references etc
 			for (auto& arg : m_ArgMap)
