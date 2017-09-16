@@ -5,6 +5,7 @@
 #include <stdexcept>
 
 #include "handler_base.hxx"
+#include "diagnostics.hxx"
 
 namespace cl
 {
@@ -73,7 +74,12 @@ namespace cl
 				case internal::error_mode_::terminate:
 				{
 					// Print out error message
-					::std::cout << p_ex.what() << std::endl;
+					internal::post_diagnostic(
+						internal::diagnostics_level::error,
+						{ m_Data.m_ApplicationName },
+						{ },
+						{ p_ex.what() }
+					);
 
 					if(m_Data.m_HelpMode & internal::help_mode_::on_error)
 						p_cmd.print_help();
