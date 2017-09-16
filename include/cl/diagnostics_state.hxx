@@ -116,19 +116,37 @@ namespace cl
 				}
 				
 				auto argument_range() const
-					-> source_range
+					-> const source_range&
 				{
 					return m_ArgumentRange;
 				}
 				
 				auto name_range() const
-					-> source_range
+					-> const source_range&
 				{
 					return m_NameRange;
 				}
 				
 				auto value_ranges() const
 					-> const range_container_type&
+				{
+					return m_ValueRanges;
+				}
+				
+				auto argument_range()
+					-> source_range&
+				{
+					return m_ArgumentRange;
+				}
+				
+				auto name_range()
+					-> source_range&
+				{
+					return m_NameRange;
+				}
+				
+				auto value_ranges()
+					-> range_container_type&
 				{
 					return m_ValueRanges;
 				}
