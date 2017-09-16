@@ -113,7 +113,7 @@ namespace cl
 				auto empty() const
 					-> bool
 				{
-					return (m_Start == npos || m_End == npos);
+					return (m_Start == npos || m_End == npos) || (length() == 0U);
 				}
 		
 			private:
