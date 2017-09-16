@@ -15,6 +15,38 @@ namespace cl
 		
 		static const from_length_t from_length{ };
 	
+		// A single location in the source code
+		class source_location
+		{
+			using size_type = ::std::size_t;
+			
+			public:
+				static const size_type npos = size_type(-1);
+			
+			public:
+				source_location(size_type p_line, size_type p_col)
+					: m_Line{p_line}, m_Col{p_col}
+				{
+				}
+			
+			public:
+				auto column() const
+					-> size_type
+				{
+					return m_Col;
+				}
+				
+				auto line() const
+					-> size_type
+				{
+					return m_Line;
+				}
+			
+			private:
+				size_type m_Col;
+				size_type m_Line;
+		};
+	
 		// A range in one line of source code.
 		class source_range
 		{
@@ -44,6 +76,12 @@ namespace cl
 				}
 		
 			public:
+				auto location() const
+					-> source_location
+				{
+					return { line(), start() };
+				}
+			
 				auto start() const
 					-> size_type
 				{
