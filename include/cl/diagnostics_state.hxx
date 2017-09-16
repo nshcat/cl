@@ -92,6 +92,11 @@ namespace cl
 				{
 				}
 				
+				diagnostics_state()
+					: m_Source{}
+				{
+				}
+				
 			public:
 				diagnostics_state(const diagnostics_state&) = default;
 				diagnostics_state(diagnostics_state&&) = default;
