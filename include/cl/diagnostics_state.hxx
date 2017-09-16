@@ -24,6 +24,8 @@ namespace cl
 				static const size_type npos = size_type(-1);
 			
 			public:
+				source_location() = default;
+			
 				source_location(size_type p_line, size_type p_col)
 					: m_Line{p_line}, m_Col{p_col}
 				{
@@ -43,8 +45,8 @@ namespace cl
 				}
 			
 			private:
-				size_type m_Col;
-				size_type m_Line;
+				size_type m_Col{ npos };
+				size_type m_Line{ npos };
 		};
 	
 		// A range in one line of source code.
