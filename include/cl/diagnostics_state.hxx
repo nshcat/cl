@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <ios>
 
 #include <ut/string_view.hxx>
 
@@ -18,7 +19,8 @@ namespace cl
 		// A single location in the source code
 		class source_location
 		{
-			using size_type = ::std::size_t;
+			public:
+				using size_type = ::std::size_t;
 			
 			public:
 				static const size_type npos = size_type(-1);
@@ -52,7 +54,8 @@ namespace cl
 		// A range in one line of source code.
 		class source_range
 		{
-			using size_type = ::std::size_t;
+			public:
+				using size_type = ::std::size_t;
 		
 			public:
 				static const size_type npos = size_type(-1);
@@ -212,5 +215,17 @@ namespace cl
 				range_container_type m_ValueRanges;	//< Source ranges of all values following the assignment
 													//  (includes the value bound by assignment) (might be empty)
 		};
+	}
+}
+
+namespace std
+{
+	template< typename T, typename TTraits >
+	auto operator<<(::std::basic_ostream<T, TTraits>& p_str, const ::cl::internal::source_range& p_range)
+		-> ::std::basic_ostream<T, TTraits>&
+	{
+		p_str << "[" << p_range.start() << ", " << p_range.end() << "] (Length: " << p_range.length() << ")";
+		
+		return p_str;
 	}
 }
