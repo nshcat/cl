@@ -103,9 +103,9 @@ namespace cl
 				
 				// Convert to relative (based on start of displayed source range)
 				source_range t_relative{
+					from_length,
 					p_underline.start() - p_range.start(),
-					p_underline.length() // This is intended, the length becomes the end marker
-										 // because it is relative now.
+					p_underline.length()
 				};
 						
 				// Build underline string
@@ -121,7 +121,7 @@ namespace cl
 				::std::string t_underlineStr{ t_underlineStrStream.str() };
 				
 				// Third part: caret
-				t_underlineStr.at(p_caretOffset) = '^';
+				t_underlineStr.at(t_relative.start() + p_caretOffset) = '^';
 							
 				// Display
 				::std::cout << '\t'
