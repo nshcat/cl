@@ -14,7 +14,7 @@ namespace cl
 				diagnostics_level::error,
 				"commandline",
 				p_state.name_range().location(),
-				"Unknown commandline argument: \"%s%s\"",
+				"Unknown argument: \"%s%s\"",
 				(p_isShort ? "-" : "--"),
 				p_name
 			);
