@@ -7,6 +7,7 @@
 #include "positional_argument.hxx"
 #include "parser_state.hxx"
 #include "diagnostics_state.hxx"
+#include "parser_utility.hxx"
 
 namespace cl
 {
@@ -77,12 +78,18 @@ namespace cl
 				
 				if(p_state.is_short())
 				{
-					auto t_argument = p_hndlr.get(p_state.name().at(0));
+					if(!p_hndlr.has(p_state.short_name()))
+						report_invalid(p_state.name(), true, p_diagState);
+						
+					auto t_argument = p_hndlr.get(p_state.short_name());
 					t_argument->set_diag_state(p_diagState);
 					t_argument->read(p_state.values(), true);
 				}
 				else
 				{
+					if(!p_hndlr.has(p_state.name()))
+						report_invalid(p_state.name(), false, p_diagState);
+					
 					auto t_argument = p_hndlr.get(p_state.name());
 					t_argument->set_diag_state(p_diagState);
 					t_argument->read(p_state.values(), true);			
@@ -112,6 +119,10 @@ namespace cl
 						p_in.line()
 					};
 					
+					// Check if argument exists
+					if(!p_hndlr.has(p_state.names()[t_ix].at(0)))
+						report_invalid(p_state.names()[t_ix], true, p_diagState);
+										
 					auto t_argument = p_hndlr.get(p_state.names()[t_ix].at(0));
 					t_argument->set_diag_state(p_diagState);
 					t_argument->read(p_state.values(), false);				
@@ -127,7 +138,9 @@ namespace cl
 				// We will not include the whole list of positional arguments here, so the range
 				// of the whole argument is the range of the current name, altered based on whether
 				// it is a short or long argument.
-				const auto t_adjust = (p_state.is_short() ? 1U : 2U);
+				// The adjustment is increased by one, because the marker character (that is displayed
+				// as a space) is included. TODO change this
+				const auto t_adjust = (p_state.is_short() ? 2U : 3U);
 				
 				p_diagState.argument_range() = source_range{
 					from_length,
@@ -135,15 +148,23 @@ namespace cl
 					p_diagState.name_range().length() + t_adjust,
 					p_in.line()
 				};
+				
+				::std::cout << "Argument range: " << p_diagState.argument_range() << ::std::endl;
 			
 				if(p_state.is_short())
 				{
-					auto t_argument = p_hndlr.get(p_state.name().at(0));
+					if(!p_hndlr.has(p_state.short_name()))
+						report_invalid(p_state.name(), true, p_diagState);
+					
+					auto t_argument = p_hndlr.get(p_state.short_name());
 					t_argument->set_diag_state(p_diagState);
 					t_argument->read(p_state.values(), false);			
 				}
 				else
 				{
+					if(!p_hndlr.has(p_state.name()))
+						report_invalid(p_state.name(), false, p_diagState);
+				
 					auto t_argument = p_hndlr.get(p_state.name());
 					t_argument->set_diag_state(p_diagState);
 					t_argument->read(p_state.values(), false);			

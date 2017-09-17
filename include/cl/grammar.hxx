@@ -1,9 +1,12 @@
 #pragma once
 
+#include <algorithm>
+
 #include <pegtl.hh>
 
 #include "command.hxx"
 #include "parser_state.hxx"
+#include "parser_utility.hxx"
 
 namespace cl
 {
@@ -16,13 +19,40 @@ namespace cl
 		{
 			template<	pegtl::apply_mode A,
 						template< typename... > class Action,
-						template< typename... > class Control,
-						typename... States
+						template< typename... > class Control
 					>
-			static bool match( pegtl::input&, command_base& p_hndlr, parser_state& p_state, States&... )
-			{
+			static bool match(pegtl::input&, command_base& p_hndlr, parser_state& p_state, diagnostics_state& p_diagState)
+			{				
 				// This assumes that a short name was already matched.
 				// Check if argument with given short name is a switch type argument.
+				if(!p_hndlr.has(p_state.short_name()))
+				{
+					// At this point, the argument_range is not yet set in the diagnostics state,
+					// so we have to generate our own here. This is not a problem though, since
+					// this rule only appears in one position: directly after a short argument
+					// (of the form `-X`, where X is an arbitrary printable character)
+					// One problem is that other short arguments might follow, in the form
+					// `-XYZ...`, but those aren't matched yet so we do not have any location data
+					// about them. We thus have to find the first white space to determine
+					// how much we need to display.
+					auto t_state{p_diagState};
+					
+					const auto t_src = t_state.source();
+					const auto t_name = t_state.name_range();
+					
+					const auto t_it = ::std::find(::std::next(t_src.begin(), t_name.start()), t_src.end(), ' ');			
+					
+					t_state.argument_range() = source_range{
+						from_length,
+						t_state.name_range().start() - 1U,
+						static_cast<source_range::size_type>(
+							1 + ::std::distance(::std::next(t_src.begin(), t_name.start()), t_it)
+						)
+					};
+				
+					report_invalid(p_state.name(), true, t_state);
+				}
+
 				return p_hndlr.get(p_state.short_name())->is_switch();
 			}
 		};
