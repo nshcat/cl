@@ -36,11 +36,11 @@ namespace cl
 			-> void;
 		
 		template< typename... Ts >
-		auto post_diagnostic(diagnostics_level p_level, ut::string_view p_sender, ut::string_view p_message, Ts&&... p_fmtargs)
+		auto post_diagnostic(diagnostics_level p_level, ut::string_view p_sender, source_location p_loc, ut::string_view p_message, Ts&&... p_fmtargs)
 			-> void
 		{
 			const auto t_msg = ut::sprintf(p_message, ::std::forward<Ts>(p_fmtargs)...);
-			post_diagnostic(p_level, p_sender, {t_msg});
+			post_diagnostic(p_level, p_sender, p_loc, {t_msg});
 		}
 		
 		
