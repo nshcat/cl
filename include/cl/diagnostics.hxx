@@ -44,12 +44,17 @@ namespace cl
 		}
 		
 		
+		// Constants used to set caret offset.
+		constexpr static const ::std::size_t leftmost = 0U;
+		constexpr static const ::std::size_t rightmost = ::std::size_t(-1);
+		
+		
 		//     blablablabla
 		//	   ^~~~~
 		// Writes a part of the given source view to screen, indented by a tab.
 		// Supports adding squiggly-lines. The caret can optionally be offset from
 		// the start of the underline (relative)
-		auto post_source_view(ut::string_view p_src, source_range p_range, source_range p_underline, ::std::size_t p_caretOffset = 0U)
+		auto post_source_view(ut::string_view p_src, source_range p_range, source_range p_underline, ::std::size_t p_caretOffset = leftmost)
 			-> void;
 			
 			
@@ -61,7 +66,7 @@ namespace cl
 		// the start of the underline (relative).
 		// This will add a string as a hint to the user. It will be positioned
 		// at the specified caret position.
-		auto post_fixit(ut::string_view p_src, source_range p_range, source_range p_underline, ut::string_view p_fix, ::std::size_t p_caretOffset = 0U)
+		auto post_fixit(ut::string_view p_src, source_range p_range, source_range p_underline, ut::string_view p_fix, ::std::size_t p_caretOffset = leftmost)
 			-> void;
 	}
 }

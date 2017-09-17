@@ -98,7 +98,7 @@ namespace cl
 					throw ::std::runtime_error("post_source_view: Underline source range not inside of display range");
 				
 				// Check if caret is inside of underline range
-				if(p_caretOffset >= p_underline.length())
+				if((p_caretOffset >= p_underline.length()) && (p_caretOffset != rightmost))
 					throw ::std::runtime_error("post_source_view: Caret offset out of range");
 				
 				// Convert to relative (based on start of displayed source range)
@@ -121,7 +121,8 @@ namespace cl
 				::std::string t_underlineStr{ t_underlineStrStream.str() };
 				
 				// Third part: caret
-				t_underlineStr.at(t_relative.start() + p_caretOffset) = '^';
+				const auto t_caretIndex = (p_caretOffset == rightmost) ? (t_relative.end() - 1) : t_relative.start() + p_caretOffset;
+				t_underlineStr.at(t_caretIndex) = '^';
 							
 				// Display
 				::std::cout << '\t'
