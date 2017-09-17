@@ -28,6 +28,12 @@ namespace cl
 		};
 
 
+		// R_Delim: Non-printable delimiter used to mark argument values that
+		// might contain spaces. We don't use \" here because that is difficult
+		// to remove. (For now)
+		struct R_Delim
+			:	one<'\x11'>
+		{};
 
 		// R_Long: Start of a long-name argument ("--")
 		// Action: Set flag to indicate long name
@@ -83,7 +89,7 @@ namespace cl
 		struct R_Value   // Interpret as value
 			:	plus<
 					seq<
-						not_at< one<'"'> >,
+						not_at< R_Delim >,	// TODO maybe we have to accept \" here aswell
 						ascii::any
 					>
 				>
@@ -94,10 +100,10 @@ namespace cl
 		struct R_PositionalArgList
 			:	star<
 					seq<
-						one<'"'>,
+						R_Delim,
 						not_at<R_ArgBegin>,					
 						R_Value,
-						one<'"'>,
+						R_Delim,
 						space
 					>
 				>
@@ -107,9 +113,9 @@ namespace cl
 		// Action: Call read("", values). If argument is positional, clear value list.
 		struct R_NonAssignment
 			:	seq<
-					one<'"'>,
+					R_Delim,
 					R_ArgBegin,
-					one<'"'>,
+					R_Delim,
 					space,
 					R_PositionalArgList
 				>
@@ -119,11 +125,11 @@ namespace cl
 		// R_Assignment_Eq: Assignment using "=" sign
 		struct R_Assignment_Eq
 			:	seq<
-					one<'"'>,
+					R_Delim,
 					R_ArgBegin,
 					one<'='>,
 					R_Value,
-					one<'"'>,
+					R_Delim,
 					space
 				>
 		{};
@@ -131,11 +137,11 @@ namespace cl
 		// R_Assignment_Alt: Assignment without "=" sign, forced quoted
 		struct R_Assignment_Alt
 			:	seq<
-					one<'"'>,
+					R_Delim,
 					R_Short,
 					R_ShortName,
 					R_Value,
-					one<'"'>,
+					R_Delim,
 					space
 				>
 		{};
@@ -145,12 +151,12 @@ namespace cl
 		// argument of switch type.
 		struct R_Multi_Switch
 			:	seq<
-					one<'"'>,
+					R_Delim,
 					R_Short,
 					R_ShortName,
 					R_Meta_IsSwitch,
 					plus< R_ShortName >,
-					one<'"'>,
+					R_Delim,
 					space
 				>
 		{};

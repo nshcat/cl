@@ -130,6 +130,15 @@ namespace cl
 				diagnostics_state(const ::std::string& p_src)
 					: m_Source{p_src}
 				{
+					// Filter out markers
+					::std::transform(m_Source.begin(), m_Source.end(), m_Source.begin(),
+						[](char c) -> char
+						{
+							if(c == '\x11')
+								return ' ';
+							else return c;
+						}
+					);
 				}
 				
 				diagnostics_state()

@@ -225,7 +225,7 @@ namespace cl
 
 			for (const char* t_entry: p_cl)
 			{
-				ss << std::quoted(t_entry) << ' ';
+				ss << '\x11' << (t_entry) << "\x11 ";
 			}
 
 			::std::string t_source{ ss.str() };
