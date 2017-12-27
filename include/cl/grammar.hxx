@@ -27,7 +27,8 @@ namespace cl
 				// Check if argument with given short name is a switch type argument.
 				if(!p_hndlr.has(p_state.short_name()))
 				{
-					// At this point, the argument_range is not yet set in the diagnostics state,
+					// At this point, the argument_range is not yet set in the diagnostics state
+					// (because the parent grammar rule has not been matched yet),
 					// so we have to generate our own here. This is not a problem though, since
 					// this rule only appears in one position: directly after a short argument
 					// (of the form `-X`, where X is an arbitrary printable character)
@@ -42,10 +43,10 @@ namespace cl
 					
 					const auto t_it = ::std::find(::std::next(t_src.begin(), t_name.start()), t_src.end(), ' ');			
 					
-					t_state.argument_range() = source_range{
-						from_length,
+					t_state.argument_range() = diagnostics::source_range{
+						diagnostics::from_length,
 						t_state.name_range().start() - 1U,
-						static_cast<source_range::size_type>(
+						static_cast<diagnostics::source_range::size_type>(
 							1 + ::std::distance(::std::next(t_src.begin(), t_name.start()), t_it)
 						)
 					};

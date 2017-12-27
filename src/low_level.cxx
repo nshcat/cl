@@ -3,75 +3,76 @@
 #include <algorithm>
 #include <stdexcept>
 #include <iterator>
-
 #include <ut/cast.hxx>
-
-#include <diagnostics.hxx>
+#include <diagnostics/low_level.hxx>
 
 namespace cl
 {
-	namespace internal
+	namespace diagnostics
 	{
-		auto get_type_str(diagnostics_level p_level)
-			-> ut::string_view
+		namespace internal
 		{
-			const static ::std::array<const char*, 5> t_table = {{
-				"error",
-				"warning",
-				"note",
-				"remark",
-				"debug"
-			}};
+			auto get_type_str(diagnostics_level p_level)
+				-> ut::string_view
+			{
+				const static ::std::array<const char*, 5> t_table = {{
+					"error",
+					"warning",
+					"note",
+					"remark",
+					"debug"
+				}};
+				
+				return { t_table.at(ut::enum_cast(p_level)) };
+			}
 			
-			return { t_table.at(ut::enum_cast(p_level)) };
+			auto get_type_clr(diagnostics_level p_level)
+				-> ut::console_color
+			{
+				const static ::std::array<ut::console_color, 5> t_table = {{
+					ut::console_color::bright_red,
+					ut::console_color::bright_yellow,
+					ut::console_color::bright_white,
+					ut::console_color::bright_white,
+					ut::console_color::bright_magenta
+				}};
+				
+				return t_table.at(ut::enum_cast(p_level));
+			}
 		}
 		
-		auto get_type_clr(diagnostics_level p_level)
-			-> ut::console_color
-		{
-			const static ::std::array<ut::console_color, 5> t_table = {{
-				ut::console_color::bright_red,
-				ut::console_color::bright_yellow,
-				ut::console_color::bright_white,
-				ut::console_color::bright_white,
-				ut::console_color::bright_magenta
-			}};
-			
-			return t_table.at(ut::enum_cast(p_level));
-		}
-		
-		auto post_diagnostic(diagnostics_level p_level, ut::string_view p_sender, source_location p_loc, ut::string_view p_message)
+		auto post_diagnostic(::std::ostream& p_out, diagnostics_level p_level, ut::string_view p_sender, source_location p_loc, ut::string_view p_message)
 			-> void
 		{
-			const auto t_color = get_type_clr(p_level);
-			const auto t_type_str = get_type_str(p_level);
+			const auto t_color = internal::get_type_clr(p_level);
+			const auto t_type_str = internal::get_type_str(p_level);
 			
 			// Sender and line, column
 			{
-				::std::cout << p_sender << ":";
+				p_out << p_sender << ":";
 			
 				if(p_loc.line() != source_location::npos)
-					::std::cout << p_loc.line() << ":";
+					p_out << p_loc.line() << ":";
 				
 				if(p_loc.column() != source_location::npos)
-					::std::cout << p_loc.column() << ":";
+					p_out << p_loc.column() << ":";
 				
-				::std::cout << ' ';
+				p_out << ' ';
 			}
 			
 			// Diag level
 			{
-				::std::cout << ut::foreground(t_color)
-							<< t_type_str
-							<< ut::reset_color
-							<< ": "
-							<< p_message
-							<< ::std::endl;
+				p_out 	<< ut::foreground(t_color)
+						<< t_type_str
+						<< ut::reset_color
+						<< ": "
+						<< p_message
+						<< ::std::endl;
 			}
 		}
 		
 		
-		auto post_source_view(ut::string_view p_src, source_range p_range, source_range p_underline, ::std::size_t p_caretOffset)
+		auto post_source_view(::std::ostream& p_out, ut::string_view p_src, source_range p_range, source_range p_underline, ::std::size_t p_caretOffset)
 			-> void
 		{
 			// TODO most of the following implementation will only work when the source consists
@@ -89,7 +90,7 @@ namespace cl
 			auto t_srcPiece = p_src.substr(p_range.start(), p_range.length());
 			
 			// Write it out
-			::std::cout << '\t' << t_srcPiece << ::std::endl;
+			p_out << '\t' << t_srcPiece << ::std::endl;
 			
 			if(!p_underline.empty())
 			{
@@ -125,15 +126,15 @@ namespace cl
 				t_underlineStr.at(t_caretIndex) = '^';
 							
 				// Display
-				::std::cout << '\t'
-							<< ut::foreground(ut::console_color::bright_green)
-							<< t_underlineStr
-							<< ut::reset_color
-							<< ::std::endl;
+				p_out	<< '\t'
+						<< ut::foreground(ut::console_color::bright_green)
+						<< t_underlineStr
+						<< ut::reset_color
+						<< ::std::endl;
 			}	
 		}
 			
-		auto post_fixit(ut::string_view p_src, source_range p_range, source_range p_underline, ut::string_view p_fix, ::std::size_t p_caretOffset)
+		auto post_fixit(::std::ostream& p_out, ut::string_view p_src, source_range p_range, source_range p_underline, ut::string_view p_fix, ::std::size_t p_caretOffset)
 			-> void
 		{
 			// Underline is not optional here
@@ -145,7 +146,7 @@ namespace cl
 				throw ::std::runtime_error("post_fixit: Fixit hint string is empty");
 		
 			// Write out source view and squiggly lines
-			post_source_view(p_src, p_range, p_underline, p_caretOffset = 0U);
+			post_source_view(p_out, p_src, p_range, p_underline, p_caretOffset = 0U);
 							
 			// Convert to relative (based on start of displayed source range)
 			source_range t_relative{
@@ -154,18 +155,18 @@ namespace cl
 									 // because it is relative now.
 			};
 			
-			::std::cout << '\t';
+			p_out << '\t';
 			
 			// Write spaces to the output stream to correctly align the fix hint.
 			// This dependends on the start of the underline (given as t_relative)
 			// and the caret offset
-			::std::fill_n(::std::ostream_iterator<char>(::std::cout), t_relative.start() + p_caretOffset, ' ');
+			::std::fill_n(::std::ostream_iterator<char>(p_out), t_relative.start() + p_caretOffset, ' ');
 			
 			// Write hint
-			::std::cout << ut::foreground(ut::console_color::bright_green)
-						<< p_fix
-						<< ut::reset_color
-						<< ::std::endl;
+			p_out	<< ut::foreground(ut::console_color::bright_green)
+					<< p_fix
+					<< ut::reset_color
+					<< ::std::endl;
 		}
 	}
 }

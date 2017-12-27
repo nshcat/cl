@@ -10,8 +10,9 @@ namespace cl
 		auto report_invalid(ut::string_view p_name, bool p_isShort, const diagnostics_state& p_state)
 			-> void
 		{
-			post_diagnostic(
-				diagnostics_level::error,
+			diagnostics::post_diagnostic(
+				::std::cout,
+				diagnostics::diagnostics_level::error,
 				"commandline",
 				p_state.name_range().location(),
 				"Unknown argument: \"%s%s\"",
@@ -19,11 +20,12 @@ namespace cl
 				p_name
 			);
 			
-			post_source_view(
+			diagnostics::post_source_view(
+				::std::cout,
 				p_state.source(),
 				p_state.argument_range(),
 				p_state.name_range(),
-				leftmost
+				diagnostics::leftmost
 			);
 			
 			::std::exit(EXIT_FAILURE);

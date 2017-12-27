@@ -25,7 +25,7 @@ namespace cl
 			{
 				p_state.names().push_back(p_in.string());
 				
-				p_diagState.name_range() = source_range{ from_length, p_in.column(), p_in.size(), p_in.line() };
+				p_diagState.name_range() = diagnostics::source_range{ diagnostics::from_length, p_in.column(), p_in.size(), p_in.line() };
 			}
 		};
 
@@ -36,7 +36,7 @@ namespace cl
 			{
 				p_state.names().push_back(p_in.string());
 				
-				p_diagState.name_range() = source_range{ from_length, p_in.column(), p_in.size(), p_in.line() };
+				p_diagState.name_range() = diagnostics::source_range{ diagnostics::from_length, p_in.column(), p_in.size(), p_in.line() };
 			}
 		};
 
@@ -47,7 +47,7 @@ namespace cl
 			{
 				p_state.values().push_back(p_in.string());
 				
-				p_diagState.value_ranges().push_back({ from_length, p_in.column(), p_in.size(), p_in.line() });
+				p_diagState.value_ranges().push_back({ diagnostics::from_length, p_in.column(), p_in.size(), p_in.line() });
 			}
 		};
 
@@ -74,7 +74,7 @@ namespace cl
 		{
 			static void apply(const pegtl::input& p_in, command_base& p_hndlr, parser_state& p_state, diagnostics_state& p_diagState)
 			{
-				p_diagState.argument_range() = source_range{ from_length, p_in.column(), p_in.size(), p_in.line() };
+				p_diagState.argument_range() = diagnostics::source_range{ diagnostics::from_length, p_in.column(), p_in.size(), p_in.line() };
 				
 				if(p_state.is_short())
 				{
@@ -102,7 +102,7 @@ namespace cl
 		{
 			static void apply(const pegtl::input& p_in, command_base& p_hndlr, parser_state& p_state, diagnostics_state& p_diagState)
 			{
-				p_diagState.argument_range() = source_range{ from_length, p_in.column(), p_in.size(), p_in.line() };
+				p_diagState.argument_range() = diagnostics::source_range{ diagnostics::from_length, p_in.column(), p_in.size(), p_in.line() };
 			
 				// Diagnostics: Since more than one ShortName is matched, the name_range field in the
 				// diagnostics state points to the last short name.
@@ -112,8 +112,8 @@ namespace cl
 				for(::std::size_t t_ix = 0; t_ix < p_state.names().size(); ++t_ix)
 				{
 					// Adjust name range
-					p_diagState.name_range() = source_range{
-						from_length,
+					p_diagState.name_range() = diagnostics::source_range{
+						diagnostics::from_length,
 						t_nameRange.start() - (p_state.names().size() - 1 - t_ix),
 						1U,
 						p_in.line()
@@ -142,8 +142,8 @@ namespace cl
 				// as a space) is included. TODO change this
 				const auto t_adjust = (p_state.is_short() ? 2U : 3U);
 				
-				p_diagState.argument_range() = source_range{
-					from_length,
+				p_diagState.argument_range() = diagnostics::source_range{
+					diagnostics::from_length,
 					p_in.column(),
 					p_diagState.name_range().length() + t_adjust,
 					p_in.line()

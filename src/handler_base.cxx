@@ -74,8 +74,9 @@ namespace cl
 				case internal::error_mode_::terminate:
 				{
 					// Print out error message
-					internal::post_diagnostic(
-						internal::diagnostics_level::error,
+					diagnostics::post_diagnostic(
+						::std::cout,
+						diagnostics::diagnostics_level::error,
 						{ m_Data.m_ApplicationName },
 						{ },
 						{ p_ex.what() }

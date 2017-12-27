@@ -6,6 +6,7 @@
 #include <ut/throwf.hxx>
 
 #include "value_base.hxx"
+#include "diagnostics.hxx"
 
 namespace cl
 {
@@ -55,7 +56,7 @@ namespace cl
 			}
 
 		public:
-			virtual void read(::std::list<std::string>& p_vals, bool) override
+			virtual void read(::std::list<std::string>& p_vals, bool p_isAssignment) override
 			{
 				// Check if value list is empty
 				if (p_vals.empty())
@@ -86,8 +87,34 @@ namespace cl
 					p_vals.pop_front();
 					this->m_Supplied = true;
 				}
-				else ut::throwf<::std::runtime_error>("Invalid enumeration value for argument \"--%s\": \"%s\"",
-					this->m_LongName, p_vals.front());
+				/*else ut::throwf<::std::runtime_error>("Invalid enumeration value for argument \"--%s\": \"%s\"",
+					this->m_LongName, p_vals.front());*/
+				else
+				{
+					diagnostics::post_diagnostic(
+						::std::cout,
+						diagnostics::diagnostics_level::error,
+						"commandline",
+						(p_isAssignment ? this->diag_state().argument_range().location() : this->diag_state().value_ranges()[0].location()),
+						"Invalid enumeration value for argument \"--%s\": \"%s\"",
+						this->m_LongName,
+						p_vals.front()
+					);
+						
+					diagnostics::post_source_view(
+						this->diag_state().source(),
+						diagnostics::source_range{
+							this->diag_state().argument_range().start(),
+							this->diag_state().value_ranges()[0].end()
+						},				
+						this->diag_state().value_ranges()[0],
+						diagnostics::rightmost
+					);
+					
+					
+					
+					::std::exit(EXIT_FAILURE);
+				}
 			}
 
 		private:
