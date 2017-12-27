@@ -4,8 +4,8 @@
 #include <type_traits>
 #include <ut/format.hxx>
 
-#include <diagnostics/message.hxx>
-#include <diagnostics/types.hxx>
+#include "message.hxx"
+#include "types.hxx"
 
 namespace cl
 {
@@ -29,8 +29,18 @@ namespace cl
 				}
 				
 			public:
-				virtual auto apply_renderer(renderer&, output&)
+				virtual auto apply_renderer(renderer&, output&) const
 					-> void override;
+					
+			public:
+				auto level() const
+					-> diagnostics_level;
+					
+				auto sender() const
+					-> const ::std::string&;
+					
+				auto message() const
+					-> const ::std::string&;
 			
 			protected:
 				diagnostics_level m_Level{ };	//< Severity level of the message

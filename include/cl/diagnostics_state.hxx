@@ -4,7 +4,7 @@
 #include <vector>
 #include <ios>
 #include <ut/string_view.hxx>
-#include <diagnostics/types.hxx>
+#include "diagnostics.hxx"
 
 namespace cl
 {

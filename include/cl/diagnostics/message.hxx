@@ -1,6 +1,6 @@
 #pragma once
 
-#include <diagnostics/output.hxx>
+#include "output.hxx"
 
 namespace cl
 {
@@ -11,7 +11,7 @@ namespace cl
 		class message
 		{
 			public:
-				virtual auto apply_renderer(renderer&, output&) -> void = 0;			
+				virtual auto apply_renderer(renderer&, output&) const -> void = 0;			
 		};
 	}
 }

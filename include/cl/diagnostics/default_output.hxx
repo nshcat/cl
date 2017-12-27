@@ -1,6 +1,6 @@
 #pragma once
 
-#include <diagnostics/output.hxx>
+#include "output.hxx"
 
 namespace cl
 {

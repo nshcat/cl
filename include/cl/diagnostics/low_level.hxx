@@ -5,7 +5,7 @@
 #include <ut/string_view.hxx>
 #include <ut/console_color.hxx>
 #include <ut/format.hxx>
-#include <diagnostics/types.hxx>
+#include "types.hxx"
 
 
 namespace cl

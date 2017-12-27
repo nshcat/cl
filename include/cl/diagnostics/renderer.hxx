@@ -1,8 +1,8 @@
 #pragma once
 
-#include <diagnostics/output.hxx>
-#include <diagnostics/message.hxx>
-#include <diagnostics/simple_message.hxx>
+#include "output.hxx"
+#include "message.hxx"
+#include "simple_message.hxx"
 
 namespace cl
 {

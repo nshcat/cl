@@ -1,6 +1,6 @@
 #pragma once
 
-#include <diagnostics/renderer.hxx>
+#include "renderer.hxx"
 
 namespace cl
 {
