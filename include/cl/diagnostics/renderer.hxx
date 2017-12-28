@@ -4,6 +4,7 @@
 #include "message.hxx"
 #include "simple_message.hxx"
 #include "location_message.hxx"
+#include "combined_message.hxx"
 
 namespace cl
 {
@@ -16,6 +17,7 @@ namespace cl
 			public:
 				virtual auto render(const simple_message&, output&) -> void = 0;
 				virtual auto render(const location_message&, output&) -> void = 0;
+				virtual auto render(const combined_message&, output&) -> void; //< We supply a default implementation here
 		};
 	}
 }
