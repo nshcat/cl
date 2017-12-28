@@ -26,5 +26,16 @@ namespace cl
 							p_msg.message()
 			);
 		}
+		
+		auto default_renderer::render(const source_view& p_msg, output& p_out)
+			-> void
+		{
+			post_source_view(p_out.output_stream(),
+							 p_msg.source(),
+							 p_msg.range(),
+							 p_msg.underline_range(),
+							 p_msg.offset()						
+			);
+		}
 	}
 }
