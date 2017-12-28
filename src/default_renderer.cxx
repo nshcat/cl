@@ -37,5 +37,17 @@ namespace cl
 							 p_msg.offset()						
 			);
 		}
+		
+		auto default_renderer::render(const fixit_hint& p_msg, output& p_out)
+			-> void
+		{
+			post_fixit(p_out.output_stream(),
+					   p_msg.source(),
+					   p_msg.range(),
+					   p_msg.underline_range(),
+					   p_msg.hint(),
+					   p_msg.offset()						
+			);
+		}
 	}
 }

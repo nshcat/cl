@@ -17,6 +17,9 @@ namespace cl
 				
 			virtual auto render(const source_view&, output&)
 				-> void override;
+				
+			virtual auto render(const fixit_hint&, output&)
+				-> void override;
 		};
 	}
 }

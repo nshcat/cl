@@ -6,6 +6,7 @@
 #include "location_message.hxx"
 #include "combined_message.hxx"
 #include "source_view.hxx"
+#include "fixit_hint.hxx"
 
 namespace cl
 {
@@ -19,6 +20,7 @@ namespace cl
 				virtual auto render(const simple_message&, output&) -> void = 0;
 				virtual auto render(const location_message&, output&) -> void = 0;
 				virtual auto render(const source_view&, output&) -> void = 0;
+				virtual auto render(const fixit_hint&, output&) -> void = 0;
 				virtual auto render(const combined_message&, output&) -> void; //< We supply a default implementation here
 		};
 	}

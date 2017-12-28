@@ -29,7 +29,8 @@ namespace cl
 		class source_view
 			: public message
 		{
-			using offset_type = ::std::size_t;	//< Can't be negative
+			protected:
+				using offset_type = ::std::size_t;	//< Can't be negative
 			
 			public:
 				source_view(copy_source_t,
@@ -59,7 +60,7 @@ namespace cl
 					
 			public:
 				virtual auto apply_renderer(renderer&, output&) const
-					-> void override;		
+					-> void override;
 		
 			protected:
 				offset_type m_Offset{ };
