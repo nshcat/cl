@@ -53,5 +53,17 @@ namespace cl
 		{
 			return m_Cont.cend();
 		}
+		
+		auto combined_message::container() const
+			-> const container_type&
+		{
+			return m_Cont;
+		}
+			
+		auto combined_message::container()
+			-> container_type&
+		{
+			return m_Cont;
+		}
 	}
 }

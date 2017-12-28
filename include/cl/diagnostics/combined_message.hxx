@@ -69,6 +69,12 @@ namespace cl
 					
 				auto cend() const
 					-> const_iterator;
+					
+				auto container() const
+					-> const container_type&;
+					
+				auto container()
+					-> container_type&;
 				
 			private:
 				auto add(message_ptr&&)
