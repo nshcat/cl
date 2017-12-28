@@ -11,6 +11,9 @@ namespace cl
 		{
 			virtual auto render(const simple_message&, output&)
 				-> void override;
+				
+			virtual auto render(const location_message&, output&)
+				-> void override;
 		};
 	}
 }
