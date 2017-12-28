@@ -83,5 +83,19 @@ namespace cl
 			protected:
 				container_type m_Cont{ };	
 		};
+		
+		
+		template<	typename... Ts,
+					typename = ::std::enable_if_t<
+						sizeof...(Ts) >= 1 &&
+						ut::conjunction<::std::is_base_of<message, ::std::decay_t<Ts>>...>::value
+					>
+				>
+		[[noreturn]]
+		auto throw_combined(Ts&&... p_msgs)
+			-> void
+		{
+			throw combined_message{ ::std::forward<Ts>(p_msgs)... };
+		}		
 	}
 }
