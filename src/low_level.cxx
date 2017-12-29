@@ -149,9 +149,11 @@ namespace cl
 				p_out 	<< ut::foreground(t_color)
 						<< t_type_str
 						<< ut::reset_color
-						<< ": "
-						<< p_message
-						<< ::std::endl;
+						<< ": ";
+						
+				output_colored(p_out, p_message);
+					
+				p_out	<< ::std::endl;
 			}
 		}
 		
