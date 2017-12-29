@@ -1,0 +1,3 @@
+- allow coloured strings in diagnostics messages. Find a good format for that (maybe printf style?)
+- there needs to be a function to filter out the colour tags to allow colourless output.
+- use "^x"!   ^0 is reset, ^1 dark bla, ^a bright...
