@@ -19,11 +19,29 @@ namespace cl
 			
 			auto get_type_clr(diagnostics_level)
 				-> ut::console_color;
+				
+			auto get_manip(char p_modifier)
+				-> ut::console_color;
+				
+			auto is_manip(char p_modifier)
+				-> bool;
 		}
 		
 		// Constants used to set caret offset.
 		constexpr static const ::std::size_t leftmost = 0U;
 		constexpr static const ::std::size_t rightmost = ::std::size_t(-1);
+		
+		
+		// Outputs given string reference to given output stream, applying color iff stream supports it
+		// and color modifiers are encountered in the string.
+		auto output_colored(::std::ostream& p_out, ut::string_view p_str)
+			-> void;
+		
+		
+		// Strips given string of all color modifiers.
+		auto strip_modifiers(ut::string_view p_str)
+			-> ::std::string;
+		
 		
 		// test:3:5: error: bla
 		// Writes a diagnostics message to screen.

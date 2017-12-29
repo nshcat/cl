@@ -10,6 +10,39 @@ namespace cl
 {
 	namespace diagnostics
 	{
+		// Modifier codes used in diagnostics messages to indicated desired
+		// colorization
+		enum class color_modifier
+			: char
+		{
+			escape	= '^',
+			reset 	= '0',
+				
+			red 	= '1',
+			green 	= '2',
+			yellow 	= '3',
+			blue 	= '4',
+			magenta = '5',
+			cyan 	= '6',
+			white 	= '7',
+			black 	= '8',
+					
+			vivid_red 		= 'a',
+			vivid_green 	= 'b',
+			vivid_yellow 	= 'c',
+			vivid_blue 		= 'd',
+			vivid_magenta 	= 'e',
+			vivid_cyan 		= 'f',
+			vivid_white 	= 'g',
+			vivid_black 	= 'h',
+			
+			dull_begin 	= red,
+			dull_end 	= black,
+			vivid_begin = vivid_red,
+			vivid_end 	= vivid_black
+		};
+		
+	
 		enum class diagnostics_level
 		{
 			error,

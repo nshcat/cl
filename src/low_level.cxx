@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <iterator>
 #include <ut/cast.hxx>
+#include <ut/utility.hxx>
+#include <ut/throwf.hxx>
 #include <diagnostics/low_level.hxx>
 
 namespace cl
@@ -39,8 +41,90 @@ namespace cl
 				
 				return t_table.at(ut::enum_cast(p_level));
 			}
+					
+			auto get_manip(char p_modifier)
+				-> ut::console_color
+			{
+				if(p_modifier == ut::enum_cast(color_modifier::reset))
+					return ut::console_color::reset;
+			
+				constexpr auto t_beginDull = ut::enum_cast(color_modifier::dull_begin);
+				constexpr auto t_endDull = ut::enum_cast(color_modifier::dull_end);
+				constexpr auto t_beginVivid = ut::enum_cast(color_modifier::vivid_begin);
+				constexpr auto t_endVivid = ut::enum_cast(color_modifier::vivid_end);
+						
+				if(ut::in_range(p_modifier, t_beginDull, t_endDull))
+				{
+					// Dull color
+					return ut::enum_cast<ut::console_color>((p_modifier - t_beginDull) * 2);
+				}
+				else if(ut::in_range(p_modifier, t_beginVivid, t_endVivid))
+				{
+					// Vivid color
+					return ut::enum_cast<ut::console_color>(((p_modifier - t_beginVivid) * 2) + 1);
+				}
+				else ut::throwf<::std::runtime_error>("Invalid color modifier: ^%c", p_modifier);		
+			}
+			
+			auto is_manip(char p_modifier)
+				-> bool
+			{
+				if(p_modifier == ut::enum_cast(color_modifier::reset))
+					return true;
+			
+				constexpr auto t_beginDull = ut::enum_cast(color_modifier::dull_begin);
+				constexpr auto t_endDull = ut::enum_cast(color_modifier::dull_end);
+				constexpr auto t_beginVivid = ut::enum_cast(color_modifier::vivid_begin);
+				constexpr auto t_endVivid = ut::enum_cast(color_modifier::vivid_end);
+				
+				return ut::in_range(p_modifier, t_beginDull, t_endDull) ||
+				       ut::in_range(p_modifier, t_beginVivid, t_endVivid);
+			}
 		}
 		
+		
+		auto output_colored(::std::ostream& p_out, ut::string_view p_str)
+			-> void
+		{
+			constexpr auto t_escape = ut::enum_cast(color_modifier::escape);
+		
+			while(p_str.length() > 0U)
+			{
+				// Find next escape character
+				const auto t_pos = p_str.find(t_escape);
+				
+				if(t_pos == ut::string_view::npos || t_pos == (p_str.length() - 1U))
+				{
+					// No escape character found or is last character in string. Output remaining string and return.
+					p_out << p_str;
+					return;
+				}
+				else
+				{
+					// The remaining string contains a escape character that is not the last character in the
+					// string.
+					
+					// Retrieve string preceding the modifier, excluding the escape character and output it.
+					p_out << p_str.substr(0, t_pos);
+					
+					// Save (potential) modifier for later use
+					// This is safe to do since we know that the escape character was not the last character
+					// in the string
+					const auto t_mod = p_str[t_pos+1];
+					
+					// Remove preceding string and escaped modifier from string
+					p_str.remove_prefix(t_pos+2);
+					
+					if(internal::is_manip(t_mod))
+						p_out << ut::foreground(internal::get_manip(t_mod));
+					else
+						p_out << t_escape << t_mod;
+				}
+			}
+		}
+		
+		
+				
 		auto post_diagnostic(::std::ostream& p_out, diagnostics_level p_level, ut::string_view p_sender, source_location p_loc, ut::string_view p_message)
 			-> void
 		{
