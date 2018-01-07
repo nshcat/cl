@@ -107,6 +107,8 @@ namespace cl
 							t_name
 						);
 					}			
+	
+					refresh_references();
 
 					return true;
 				}
@@ -120,9 +122,7 @@ namespace cl
 			auto read(int p_argc, const char** p_argv)
 				-> bool
 			{
-				const auto t_ret = read(ut::make_view<const char*>(p_argv+1, p_argc-1));
-				
-				refresh_references();
+				const auto t_ret = read(ut::make_view<const char*>(p_argv+1, p_argc-1));				
 				
 				return t_ret;			
 			}
