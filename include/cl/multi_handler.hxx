@@ -254,6 +254,9 @@ namespace cl
 				if(m_CmdMap.count(p_cmd->name()) != 0)
 					throw ::std::runtime_error("multi_handler: Supplied multiple commands with identical name!");
 				
+				if(m_IdMap.count(p_cmd->id()) != 0)
+					throw ::std::runtime_error("multi_handler: Supplied multiple commands with identical id!");
+				
 				// Insert element into both maps
 				m_IdMap[p_cmd->id()] = ut::make_observer<command_type>(p_cmd.get());
 				m_CmdMap[p_cmd->name()] = ::std::move(p_cmd);
