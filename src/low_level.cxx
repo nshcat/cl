@@ -117,6 +117,8 @@ namespace cl
 					
 					if(internal::is_manip(t_mod))
 						p_out << ut::foreground(internal::get_manip(t_mod));
+					else if(t_mod == '^')
+						p_out << '^';	// Escaped escape character
 					else
 						p_out << t_escape << t_mod;
 				}
