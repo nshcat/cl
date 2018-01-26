@@ -35,7 +35,7 @@ namespace cl
 					ut::console_color::bright_red,
 					ut::console_color::bright_yellow,
 					ut::console_color::bright_white,
-					ut::console_color::bright_white,
+					ut::console_color::bright_black,
 					ut::console_color::bright_magenta
 				}};
 				
