@@ -62,7 +62,7 @@ namespace cl
 						*m_SuppliedRef = supplied();
 				}
 
-				virtual bool is_switch()
+				virtual bool is_switch() const
 				{
 					return false;
 				}

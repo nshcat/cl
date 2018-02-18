@@ -40,7 +40,7 @@ namespace cl
 				this->m_Supplied = true;
 			}
 
-			virtual bool is_switch() override
+			virtual bool is_switch() const override
 			{
 				return true;
 			}
