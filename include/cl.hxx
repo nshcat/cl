@@ -13,3 +13,4 @@
 #include "cl/switch_argument.hxx"
 #include "cl/floating_argument.hxx"
 #include "cl/help_argument.hxx"
+#include "cl/multi_argument.hxx"
