@@ -18,6 +18,8 @@
 #include "argument_base.hxx"
 #include "handler_data.hxx"
 #include "command_data.hxx"
+#include "value_base.hxx"
+#include "multi_value_base.hxx"
 
 namespace cl
 {
@@ -115,9 +117,55 @@ namespace cl
 					-> const_argument_view
 				{
 					return get(static_cast<::std::size_t>(p_id));
-				}	
+				}
 				
 				
+				// Get value by id
+				template< 	typename T,
+							typename U,
+							typename = ::std::enable_if_t<
+								ut::is_static_castable_v<U, ::std::size_t>
+							>
+				>
+				auto value(U p_id) const
+					-> const T&
+				{
+					// Retrieve argument view
+					auto t_view = get(p_id);
+					
+					// Try to cast up to `value_base<T>`. If that works, we know
+					// we can extract a value of type T from the argument with ID `p_id`.
+					ut::observer_ptr<const value_base<T>> t_val{ dynamic_cast<const value_base<T>*>(t_view.get()) };
+					
+					if(!t_val)	//< `value_base<T>` is not a base class of this argument.
+						throw ::std::runtime_error("Cannot retrieve value for given id: Argument type is incompatible!");
+					else return t_val->value();			
+				}
+				
+				
+				// Get value range by id
+				template< 	typename T,
+							typename U,
+							typename = ::std::enable_if_t<
+								ut::is_static_castable_v<U, ::std::size_t>
+							>
+				>
+				auto values(U p_id) const
+					-> typename multi_value_base<T>::const_view_type
+				{
+					// Retrieve argument view
+					auto t_view = get(p_id);
+					
+					// Try to cast up to `multi_base<T>`. If that works, we know
+					// we can extract a value range of type T from the argument with ID `p_id`.
+					ut::observer_ptr<const multi_value_base<T>> t_val{ dynamic_cast<const multi_value_base<T>*>(t_view.get()) };
+					
+					if(!t_val)	//< `multi_base<T>` is not a base class of this argument.
+						throw ::std::runtime_error("Cannot retrieve value range for given id: Argument type is incompatible!");
+					else return t_val->view();			
+				}
+				
+								
 				// Check by id convertible to size_t (e.g. scoped enumerations)
 				template<	typename T,
 							typename = ::std::enable_if_t<
