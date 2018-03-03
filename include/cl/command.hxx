@@ -51,6 +51,8 @@ namespace cl
 				(void)x;
 			}
 			
+			command() = default;
+			
 			command(const this_type&) = delete;
 			this_type& operator=(const this_type&) = delete;
 			

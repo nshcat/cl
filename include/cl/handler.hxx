@@ -49,7 +49,11 @@ namespace cl
 				this->set_global_data({&this->m_Data});
 			}
 			
-			handler() = delete;
+			handler()
+			{
+				this->set_global_data({&this->m_Data});
+			}
+			
 			handler(const handler&) = delete;
 			handler(handler&&) = default;
 			
