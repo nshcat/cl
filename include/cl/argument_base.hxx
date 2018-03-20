@@ -211,7 +211,9 @@ namespace cl
 								(x == '_');								
 					};
 					
-					if(!::std::all_of(t_str.begin(), t_str.end(), t_test))
+					// Additionally to only containing valid characters defined above,
+					// a valid long name cannot start with the character '-'.
+					if(!::std::all_of(t_str.begin(), t_str.end(), t_test) || t_str[0] == '-')
 						ut::throwf<::std::runtime_error>("Invalid long name: \"%s\"", t_str);
 					
 					m_LongName = t_str;
