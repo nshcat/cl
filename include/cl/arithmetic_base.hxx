@@ -68,6 +68,10 @@ namespace cl
 			protected:			
 				void check_range()
 				{
+					// Only check range if we either got a supplied value or a default value
+					if(!(this->supplied() || this->has_default()))
+						return;
+				
 					if (m_HasMin && this->m_Value < m_Min)
 					{
 						if (m_Clamp)
