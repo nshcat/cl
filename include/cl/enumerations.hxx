@@ -26,6 +26,7 @@ namespace cl
 			show_usage 		= 0x1,	/* Show a general usage string that can be set by cl::usage. */
 			show_summary 	= 0x2,	/* Show a summary of all registered options. */
 			on_error		= 0x4,	/* Show help on error. */
+			show_info		= 0x8	/* Show general application info. */
 		};
 		
 		// The help_mode_ enumeration should be usable as a bitmask type.

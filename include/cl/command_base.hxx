@@ -221,6 +221,10 @@ namespace cl
 				auto print_help() const
 					-> void;
 					
+				// Print general application info
+				auto print_info() const
+					-> void;
+					
 				// Prints a summary of all registered arguments
 				auto print_summary() const
 					-> void;

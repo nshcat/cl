@@ -56,8 +56,9 @@ namespace cl
 
 	constexpr static auto show_none = internal::help_mode_::show_none;
 	constexpr static auto show_usage = internal::help_mode_::show_usage;
+	constexpr static auto show_info = internal::help_mode_::show_info;
 	constexpr static auto show_summary = internal::help_mode_::show_summary;
-	constexpr static auto show_all = show_usage | show_summary;
+	constexpr static auto show_all = show_usage | show_summary | show_info;
 	constexpr static auto on_error = internal::help_mode_::on_error;
 	
 	

@@ -19,7 +19,7 @@ namespace cl
 			::std::string m_ApplicationVersion;
 			error_mode_ m_ErrorMode{ error_mode_::terminate };
 			error_handler_ m_ErrorHandler;
-			help_mode_ m_HelpMode{ help_mode_::show_summary };
+			help_mode_ m_HelpMode{ help_mode_::show_summary | help_mode_::show_info };
 			summary_style_ m_SummaryStyle{ summary_style_::dots };
 			::std::size_t m_SummaryDescWidth{ 60U };
 			::std::size_t m_SummaryLabelWidth{ 28U };	

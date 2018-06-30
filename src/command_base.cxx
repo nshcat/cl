@@ -273,13 +273,26 @@ namespace cl
 		{
 			if(global_data().m_HelpMode != internal::help_mode_::show_none)
 			{
-				// Print usage first
+				if(global_data().m_HelpMode & internal::help_mode_::show_info)
+					print_info();
+			
 				if(global_data().m_HelpMode & internal::help_mode_::show_usage)
 					print_usage();
 				
 				if(global_data().m_HelpMode & internal::help_mode_::show_summary)
 					print_summary();
 			}
+		}
+		
+		auto command_base::print_info() const
+			-> void
+		{
+			::std::cout << global_data().m_ApplicationName;
+			
+			if(!global_data().m_ApplicationVersion.empty())
+				::std::cout << " v" << global_data().m_ApplicationVersion;
+				
+			::std::cout << ::std::endl;
 		}
 		
 		auto command_base::print_usage() const
