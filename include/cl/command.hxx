@@ -77,8 +77,8 @@ namespace cl
 			{
 				return m_HasId;
 			}
-
-		private:
+			
+		public:
 			template< typename T >
 			auto dispatch(T&& p_arg)
 				-> void
@@ -86,6 +86,7 @@ namespace cl
 				dispatch(internal::tag_category_of_t<::std::decay_t<T>>{}, ::std::forward<T>(p_arg));
 			}
 			
+		private:
 			// Argument tag: Add to container.
 			template< typename T >
 			auto dispatch(internal::argument_tag_t, T&& p_arg)
